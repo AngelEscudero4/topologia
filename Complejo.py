@@ -23,4 +23,23 @@ class Complejo:
         caras = [list(x) for x in aux]
         return caras
 
+    """
+    Falta por probar.
+    """
+    def getCarasDim(self, dim):
+        aux = []
+        listaSimplices=[]
+        #consigo los simplices que tengan una dimension superior o igual a la que quiero sacar las caras
+        for x in self.simplices:
+            if len(x) >= dim +1:   
+                listaSimplices=listaSimplices+ x
 
+        #recorremos los simplices maximales para construir las caras
+        for cada_simplice in listaSimplices:
+            #para cada simplice construimos todas las caras (dimension menor que la del simplice)
+            aux = aux+list(combinations(cada_simplice, dim))
+        #como combinations nos devuelve tuplas -> casteamos a listas
+        caras = [list(x) for x in aux]
+        return caras
+
+    #recomendable hacer funcion auxiliar que nos diga si un elem es cara de otro elem
