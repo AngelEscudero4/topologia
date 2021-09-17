@@ -27,10 +27,6 @@ class Complejo:
         caras.sort(key=len)  # ordenar por tamaño de simplices
         return caras
 
-    """
-    Falta por probar.
-    """
-
     def getCarasDim(self, dim):
         aux = []
         listaSimplices = []
@@ -41,9 +37,8 @@ class Complejo:
 
         # recorremos los simplices maximales para construir las caras
         for cada_simplice in listaSimplices:
-            lista = list(combinations(cada_simplice, dim))
             # para cada simplice construimos todas las caras (dimension menor que la del simplice)
-            aux = aux + lista
+            aux = aux + list(combinations(cada_simplice, dim))
         # como combinations nos devuelve tuplas -> casteamos a listas
         caras = [list(x) for x in aux]
         return caras
