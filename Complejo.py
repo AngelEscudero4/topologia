@@ -6,8 +6,8 @@ class Complejo:
     def __init__(self, maximal_simplice_list):
         self.simplices = maximal_simplice_list
 
-    def __print__(self):
-        print(self.simplices)
+    def __str__(self):
+        return "Complejo: " + str(self.simplices)
 
     def dim(self):
         # la dimension del complejo es su simplice (lista) mas larga - 1
@@ -41,7 +41,7 @@ class Complejo:
 
         # recorremos los simplices maximales para construir las caras
         for cada_simplice in listaSimplices:
-            lista=list(combinations(cada_simplice, dim))
+            lista = list(combinations(cada_simplice, dim))
             # para cada simplice construimos todas las caras (dimension menor que la del simplice)
             aux = aux + lista
         # como combinations nos devuelve tuplas -> casteamos a listas
