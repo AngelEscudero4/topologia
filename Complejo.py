@@ -39,6 +39,7 @@ class Complejo:
         for cada_simplice in listaSimplices:
             # para cada simplice construimos todas las caras (dimension menor que la del simplice)
             aux = aux + list(combinations(cada_simplice, dim))
+        aux = list(set(aux))
         # como combinations nos devuelve tuplas -> casteamos a listas
         caras = [list(x) for x in aux]
         return caras
