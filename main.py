@@ -1,4 +1,4 @@
-from Complejo import Complejo
+from Complejo import Complejo, esCara
 from itertools import combinations
 
 from Complejo import Complejo
@@ -10,3 +10,5 @@ print('Dimension: ', ejemplo_1.dim())
 print('Caras: ', ejemplo_1.getCaras())
 for i in range(3):
     print('Caras dim' + str(i + 1) + ': ', ejemplo_1.getCarasDim(i + 1))
+
+print(esCara([0,1], [0,1,3,7,9,11,13]))

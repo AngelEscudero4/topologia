@@ -43,4 +43,15 @@ class Complejo:
         caras = [list(x) for x in aux]
         return caras
 
-    # recomendable hacer funcion auxiliar que nos diga si un elem es cara de otro elem
+
+def esCara(cara, simplice):
+    """
+    Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del degundo
+    """
+    res = False
+    aux = list(combinations(simplice, len(cara))) 
+    lista_caras = [list(x) for x in aux]
+    res = cara in lista_caras
+    return res
+
+
