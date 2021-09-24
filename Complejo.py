@@ -36,6 +36,25 @@ class Complejo:
     def estrella(self, simpl):
         return list(filter(lambda cara: esCara(cara, simpl), self.getCaras()))
 
+    def link(self, simpl):
+        link=[]
+        estr = self.estrella(simpl)
+        print('Estrella: ',estr)
+        set_estr = set(())
+        for i in estr:
+            set_estr.add(set(i))
+        estr_cerrada = cerrarEstrella(estr)
+        set_estr_cerrada = set(())
+        for i in estr_cerrada:
+            set_estr_cerrada.add(set(i))
+        print('Cerrada: ',estr_cerrada)
+        #hago la diferencia de conjuntos
+        #link = list(set(estr_cerrada).symmetric_difference(set(estr)))
+        link= list(set_estr_cerrada.symmetric_difference(set_estr))
+        
+        return link
+
+
 def esCara(cara, simplice):
     """
     Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del degundo

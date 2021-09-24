@@ -19,4 +19,5 @@ for j in ejemplos:
         print('Caras dim ' + str(i) + ': ', j.getCarasDim(i))
     print('Estrella 2: ', j.estrella([2]))
     print('--------------------------------------------------------------------')
-print(getCarasDeSimplice([1,2,3]))
+print(ejemplos[0].link([1,2]))
+
