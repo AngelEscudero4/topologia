@@ -29,21 +29,7 @@ class Complejo:
         return caras
 
     def getCarasDim(self, dim):
-        aux = []
-        listaSimplices = []
-        # consigo los simplices que tengan una dimension superior o igual a la que quiero sacar las caras
-        for x in self.simplices:
-            if len(x) >= dim + 1:
-                listaSimplices.append(x)
-
-        # recorremos los simplices maximales para construir las caras
-        for cada_simplice in listaSimplices:
-            # para cada simplice construimos todas las caras (dimension menor que la del simplice)
-            aux = aux + list(combinations(cada_simplice, dim))
-        aux = list(set(aux))
-        # como combinations nos devuelve tuplas -> casteamos a listas
-        caras = [list(x) for x in aux]
-        return caras
+        return list(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
     def estrella(self, simpl):
         return list(filter(lambda cara: esCara(simpl, cara), self.getCaras()))
@@ -54,9 +40,7 @@ def esCara(cara, simplice):
     Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del degundo
     """
     res = False
-    aux = list(combinations(simplice, len(cara))) 
+    aux = list(combinations(simplice, len(cara)))
     lista_caras = [list(x) for x in aux]
     res = cara in lista_caras
     return res
-
-
