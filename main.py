@@ -1,4 +1,4 @@
-from Complejo import Complejo, esCara
+from Complejo import Complejo, getCarasDeSimplice#, esCara
 from itertools import combinations
 
 from Complejo import Complejo
@@ -16,3 +16,4 @@ for j in [ejemplo_1, ejemplo_2, ejemplo_3]:
     for i in range(3):
         print('Caras dim' + str(i + 1) + ': ', j.getCarasDim(i + 1))
     print('--------------------------------------------------------------------')
+print(getCarasDeSimplice([1,2,3]))
