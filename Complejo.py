@@ -28,6 +28,9 @@ class Complejo:
 
 
     def getCarasDim(self, dim):
+        """
+        Calcula las caras de longitud dim+1
+        """
         return list(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
     def estrella(self, simpl):
