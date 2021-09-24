@@ -24,6 +24,7 @@ class Complejo:
         # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el 0
         aux = list(set(aux))
         caras = [list(x) for x in aux]
+        caras.extend(self.simplices)
         caras.sort(key=len)  # ordenar por tamaño de simplices
         return caras
 
@@ -43,6 +44,9 @@ class Complejo:
         # como combinations nos devuelve tuplas -> casteamos a listas
         caras = [list(x) for x in aux]
         return caras
+
+    def estrella(self, simpl):
+        return list(filter(lambda cara: esCara(simpl, cara), self.getCaras()))
 
 
 def esCara(cara, simplice):
