@@ -42,6 +42,13 @@ class Complejo:
         link = estr_cerrada.symmetric_difference(estr)
         return link
 
+    def esqueleto(self, num):
+        esqueleto = set()
+        for i in range(num):
+            esqueleto = esqueleto.union(self.getCarasDim(i))
+        return esqueleto
+
+
     def caract_euler(self):
         simplices = self.getCaras()
         pares = len(list(filter(lambda cara: (len(cara) - 1) % 2 == 0, simplices)))
