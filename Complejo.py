@@ -4,6 +4,24 @@ import matplotlib.pyplot as plt
 
 
 class Complejo:
+    """
+    INFORMACION DE LOS TIPOS DE DATOS:
+    - Complejo Simplicial --> Set
+    - Simplice --> Tuplas
+
+    Ejemplo: {((vertex),Num),((vertex),Num),((vertex),Num)}
+
+    simplice = (1,2,3) x = contructor([(), (), ()]) --> complejo = [simplice, ....] 1. Añadir simplice(simplNuevo)
+    --> complejo = [simplice, ...., SimplNuevo] 2. x = añadir(tuplaExistente, peso)--> complejo = [(simplice, peso),
+    .... , SimplNuevo] -> en caso de uno sin peso --> meter el 0
+    """
+    # # recibe lista de los simplices maximales
+    # def __init__(self, maximal_simplice_list: list[tuple]):
+    #     #[((),3), ((), 0)]
+    #     for cada_tupla in maximal_simplice_list:
+    #         cada_simplice = (cada_simplice, 0)
+    #     self.simplices_maximales = set(maximal_simplice_list)
+
     # recibe lista de los simplices maximales
     def __init__(self, maximal_simplice_list: list[tuple]):
         self.simplices_maximales = set(maximal_simplice_list)
@@ -104,15 +122,14 @@ def getCarasDeSimplice(simplice):
     """
     Dado un simplice nos devuelve todas las caras de ese simplice
     """
-    aux = set(())
+    caras = set(())
     # cogemos todas las caras de dim 1 hasta max
     for i in range(1, len(simplice) + 1):  # +1 para que coja tambien el maximal
-        aux = aux.union(set(combinations(simplice, i)))
+        caras = caras.union(set(combinations(simplice, i)))
     # como combinations nos devuelve tuplas -> casteamos a listas
-    # # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el 0
-    # aux = list(set(aux))
+    # # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el
 
-    return aux
+    return caras
 
 
 def cerrarEstrella(estrella):
