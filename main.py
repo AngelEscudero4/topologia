@@ -1,7 +1,5 @@
-from Complejo import Complejo, getCarasDeSimplice#, esCara
-from itertools import combinations
-
 from Complejo import Complejo
+from Complejo import getCarasDeSimplice
 
 ejemplos = [
     Complejo([[0, 1, 2], [1, 3, 4], [0, 7, 9, 8], [6, 5, 7]]),
