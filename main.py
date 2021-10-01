@@ -20,4 +20,6 @@ for j in ejemplos:
     print('Caract de Euler: ', j.caract_euler())
     print('Componentes conexas: ', j.num_componentes_conexas())
     print('link: ', j.link((2,)))
+    j.anadirSimplice((1, 7))
+    print(j)
     print('--------------------------------------------------------------------')

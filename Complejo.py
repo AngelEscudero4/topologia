@@ -17,17 +17,16 @@ class Complejo:
 
     def getCaras(self):
         """
-        Calcula todas las caras de los simplices maximales de un complejo
+        Calcula todas las caras de los simplices maximales de un complejo simplicial
         """
         caras = set()
-        # recorremos los simplices maximales para construir las caras
         for cada_simplice in self.simplices_maximales:
             caras = caras.union(getCarasDeSimplice(cada_simplice))
         return caras
 
     def getCarasDim(self, dim):
         """
-        Calcula las caras de longitud dim+1
+        Calcula las caras de longitud dim
         """
         return set(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
@@ -35,19 +34,16 @@ class Complejo:
         return set(filter(lambda cocara: esCara(simpl, cocara), self.getCaras()))
 
     def link(self, simpl):
-        link = set()
         estr = self.estrella(simpl)
         estr_cerrada = cerrarEstrella(estr)
         # hago la diferencia de conjuntos
-        link = estr_cerrada.symmetric_difference(estr)
-        return link
+        return estr_cerrada.symmetric_difference(estr)
 
     def esqueleto(self, num):
         esqueleto = set()
         for i in range(num):
             esqueleto = esqueleto.union(self.getCarasDim(i))
         return esqueleto
-
 
     def caract_euler(self):
         simplices = self.getCaras()
@@ -62,9 +58,9 @@ class Complejo:
         # añado vertices al grafo
         G.add_nodes_from(dim0)
 
-        # G.add_edges_from([(“A”,”C”), (“B”,”D”), (“B”,”E”), (“C”, “E”)])
+        # consigo aristas
         dim1 = self.getCarasDim(1)
-        # paso lista de listas a lista de tuplas
+        # paso lista de sets a lista de tuplas
         aristas = []
         for i in dim1:
             aristas.append(tuple(i))
@@ -79,21 +75,29 @@ class Complejo:
         for i in symmetrical_difference:
             G.add_edge(*(i, i))
 
+        # mostrar grafo para poder verlo
         nx.draw(G, with_labels=True, font_weight="bold")
         plt.show()
 
+        # devolvemos numero de comp conexas
         return len(list(nx.connected_components(G)))
+
+    def anadirSimplice(self, simpl: tuple):
+        """
+        Dado un simplice nuevo lo añade al conjuntos de simplices maximales.
+        Esto solo ocurre si es nuevo
+        """
+        if simpl not in self.getCaras():
+            self.simplices_maximales.add(simpl)
 
 
 def esCara(cara, simplice):
     """
-    Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del degundo
+    Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del segundo.
+    Consigo todas las combinaciones de la misma longitud que la cara y miro si esta contenido
     """
-    res = False
     aux = set(combinations(simplice, len(cara)))
-    # lista_caras = [list(x) for x in aux]
-    res = cara in aux
-    return res
+    return cara in aux
 
 
 def getCarasDeSimplice(simplice):
