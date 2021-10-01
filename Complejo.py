@@ -5,59 +5,47 @@ import matplotlib.pyplot as plt
 
 class Complejo:
     # recibe lista de los simplices maximales
-    def __init__(self, maximal_simplice_list):
-        self.simplices = maximal_simplice_list
+    def __init__(self, maximal_simplice_list: list):
+        self.simplices_maximales = set(maximal_simplice_list)
 
     def __str__(self):
-        return "Complejo: " + str(self.simplices)
+        return "Complejo: " + str(self.simplices_maximales)
 
     def dim(self):
         # la dimension del complejo es su simplice (lista) mas larga - 1
-        return len(max(self.simplices, key=len)) - 1
+        return len(max(self.simplices_maximales, key=len)) - 1
 
     def getCaras(self):
         """
         Calcula todas las caras de los simplices maximales de un complejo
         """
-        caras = []
+        caras = set()
         # recorremos los simplices maximales para construir las caras
-        for cada_simplice in self.simplices:
-            caras = caras + getCarasDeSimplice(cada_simplice)
+        for cada_simplice in self.simplices_maximales:
+            caras = caras.union(getCarasDeSimplice(cada_simplice))
         return caras
 
     def getCarasDim(self, dim):
         """
         Calcula las caras de longitud dim+1
         """
-        return list(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
+        return set(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
     def estrella(self, simpl):
-        return list(filter(lambda cara: esCara(cara, simpl), self.getCaras()))
+        return set(filter(lambda cocara: esCara(simpl, cocara), self.getCaras()))
 
     def link(self, simpl):
-        link=[]
+        link = set()
         estr = self.estrella(simpl)
-        print('Estrella: ',estr)
-        set_estr = set(())
-        for i in estr:
-            set_estr.add(set(i))
         estr_cerrada = cerrarEstrella(estr)
-        set_estr_cerrada = set(())
-        for i in estr_cerrada:
-            set_estr_cerrada.add(set(i))
-        print('Cerrada: ',estr_cerrada)
-        #hago la diferencia de conjuntos
-        #link = list(set(estr_cerrada).symmetric_difference(set(estr)))
-        link= list(set_estr_cerrada.symmetric_difference(set_estr))
-        
+        # hago la diferencia de conjuntos
+        link = estr_cerrada.symmetric_difference(estr)
         return link
 
-        
     def caract_euler(self):
         simplices = self.getCaras()
         pares = len(list(filter(lambda cara: (len(cara) - 1) % 2 == 0, simplices)))
         impares = len(simplices) - pares
-
         return pares - impares
 
     def num_componentes_conexas(self):
@@ -95,9 +83,9 @@ def esCara(cara, simplice):
     Funcion auxiliar que nos indica si dados dos simplices, el primero es cara del degundo
     """
     res = False
-    aux = list(combinations(simplice, len(cara)))
-    lista_caras = [list(x) for x in aux]
-    res = cara in lista_caras
+    aux = set(combinations(simplice, len(cara)))
+    # lista_caras = [list(x) for x in aux]
+    res = cara in aux
     return res
 
 
@@ -105,24 +93,23 @@ def getCarasDeSimplice(simplice):
     """
     Dado un simplice nos devuelve todas las caras de ese simplice
     """
-    aux = []
+    aux = set(())
     # cogemos todas las caras de dim 1 hasta max
     for i in range(1, len(simplice) + 1):  # +1 para que coja tambien el maximal
-        aux = aux + list(combinations(simplice, i))
+        aux = aux.union(set(combinations(simplice, i)))
     # como combinations nos devuelve tuplas -> casteamos a listas
-    # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el 0
-    aux = list(set(aux))
-    caras = [list(x) for x in aux]
-    caras.sort(key=len)  # ordenar por tamaño de simplices
-    return caras
+    # # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el 0
+    # aux = list(set(aux))
+
+    return aux
 
 
 def cerrarEstrella(estrella):
     """
     Dado una estrella devuelve la estrella cerrada
     """
-    estrella_cerrada = []
+    estrella_cerrada = set()
     # obtenemos todas las caras de los simplices que forman la estrella
     for elem in estrella:
-        estrella_cerrada = estrella_cerrada + getCarasDeSimplice(elem)
+        estrella_cerrada = estrella_cerrada.union(getCarasDeSimplice(elem))
     return estrella_cerrada

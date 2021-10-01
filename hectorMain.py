@@ -20,7 +20,7 @@ for i in range(sc.dim() + 1):
 print('Caract de Euler: ', sc.caract_euler())
 
 # (9) Estrella de la arista (0,1)
-print('Estrella (0,1): ', sc.estrella([0, 1]))
+print('Estrella (0,1): ', sc.estrella((0, 1)))
 
 # (10) Link de la arista (0,1)
 
