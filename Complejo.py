@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 class Complejo:
     # recibe lista de los simplices maximales
-    def __init__(self, maximal_simplice_list: list):
+    def __init__(self, maximal_simplice_list: list[tuple]):
         self.simplices_maximales = set(maximal_simplice_list)
 
     def __str__(self):
