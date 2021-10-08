@@ -1,6 +1,11 @@
 from itertools import combinations
 import networkx as nx
+import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.colors
+
+from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 
 
 class Complejo:
@@ -15,30 +20,24 @@ class Complejo:
     --> complejo = [simplice, ...., SimplNuevo] 2. x = añadir(tuplaExistente, peso)--> complejo = [(simplice, peso),
     .... , SimplNuevo] -> en caso de uno sin peso --> meter el 0
     """
-    # # recibe lista de los simplices maximales
-    # def __init__(self, maximal_simplice_list: list[tuple]):
-    #     #[((),3), ((), 0)]
-    #     for cada_tupla in maximal_simplice_list:
-    #         cada_simplice = (cada_simplice, 0)
-    #     self.simplices_maximales = set(maximal_simplice_list)
 
     # recibe lista de los simplices maximales
     def __init__(self, maximal_simplice_list: list[tuple]):
         self.simplices_maximales = set(maximal_simplice_list)
 
     def __str__(self):
-        return "Complejo: " + str(self.simplices_maximales)
+        return "Complejo: " + str(self.simplices)
 
     def dim(self):
         # la dimension del complejo es su simplice (lista) mas larga - 1
-        return len(max(self.simplices_maximales, key=len)) - 1
+        return len(max(self.simplices, key=len)) - 1
 
     def getCaras(self):
         """
         Calcula todas las caras de los simplices maximales de un complejo simplicial
         """
         caras = set()
-        for cada_simplice in self.simplices_maximales:
+        for cada_simplice in self.simplices:
             caras = caras.union(getCarasDeSimplice(cada_simplice))
         return caras
 
@@ -100,13 +99,43 @@ class Complejo:
         # devolvemos numero de comp conexas
         return len(list(nx.connected_components(G)))
 
-    def anadirSimplice(self, simpl: tuple):
+    def anadirSimplice(self, simplices: list[tuple], valor: float):
         """
         Dado un simplice nuevo lo añade al conjuntos de simplices maximales.
-        Esto solo ocurre si es nuevo
         """
-        if simpl not in self.getCaras():
-            self.simplices_maximales.add(simpl)
+        for cadaSimp in simplices:
+            self.simplices.append(cadaSimp)
+            self.pesos.append(valor)
+
+    def filtration(self, valor: float):
+        """
+        Obtenemos los simplices que tienen un peso menor a 'valor'.
+        Crea una función que recupere el complejo simplicial formado por todos los  símplices cuyo flotante asociado sea menor o igual que un flotante dado.
+        """
+        res = []
+        for i in range(len(self.pesos)):
+            if self.pesos[i] <= valor:
+                res.append(self.simplices[i])
+        return res
+
+    def devolverPeso(self, simpl):
+        """
+        Devuelve el peso del simplice asociado (minimo de sus cocaras)
+        o None si no tiene cocara -> no pertenece
+        :param simpl:
+        :return:
+        """
+        peso_res = None
+        for i in range(len(self.simplices)):
+            print(self.simplices[i], self.pesos[i])
+            # me quedo con el minimo de los pesos de sus cocaras
+            if esCara(simpl, self.simplices[i]):
+                if peso_res is None:
+                    peso_res = self.pesos[i]
+                else:
+                    peso_res = min(peso_res, self.pesos[i])
+
+        return peso_res
 
 
 def esCara(cara, simplice):

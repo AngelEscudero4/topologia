@@ -41,7 +41,7 @@ print('(13) Caras: ', sc1.getCaras())
 print('(14) Dimension: ', sc1.dim())
 
 # (15) Estrella del vértice 0
-print('(15) Estrella {0,1}: ', sc1.estrella([0, 1]))
+print('(15) Estrella {0,1}: ', sc1.estrella((0, 1)))
 
 # (16) Link del vértice 0
 
