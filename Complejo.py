@@ -55,27 +55,42 @@ class Complejo:
         return set(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
     def estrella(self, simpl):
+        """
+        Obtenemos la estrella de 'self' del símplice 'simpl'
+        """
         return set(filter(lambda cocara: esCara(simpl, cocara), self.getCaras()))
 
     def link(self, simpl):
+        """
+        Obtenemos el link de 'self' del símplice 'simpl'
+        """
         estr = self.estrella(simpl)
         estr_cerrada = cerrarEstrella(estr)
         # hago la diferencia de conjuntos
         return estr_cerrada.symmetric_difference(estr)
 
     def esqueleto(self, num):
+        """
+        Calculamos el n-esqueleto de 'self' siendo n el valor pasado como parámetro llamado 'num'
+        """
         esqueleto = set()
-        for i in range(num):
+        for i in range(num+1):
             esqueleto = esqueleto.union(self.getCarasDim(i))
         return esqueleto
 
     def caract_euler(self):
+        """
+        Obtenemos la caracteristica de Euler del simplice
+        """
         simplices = self.getCaras()
         pares = len(list(filter(lambda cara: (len(cara) - 1) % 2 == 0, simplices)))
         impares = len(simplices) - pares
         return pares - impares
 
     def num_componentes_conexas(self):
+        """
+        Obtenemos el numero de componentes conexas del simplice 'self'
+        """
         G = nx.Graph()
         # Tengo que aplanarlos, por eso hago compresion
         dim0 = [item for lista in self.getCarasDim(0) for item in lista]

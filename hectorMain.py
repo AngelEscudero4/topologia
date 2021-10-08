@@ -31,7 +31,7 @@ print('(11) Componentes conexas: ', sc.num_componentes_conexas())
 
 # EJEMPLO 2
 # (12) Consideramos el 3-símplice
-sc1 = Complejo()
+sc1 = Complejo(list(sc.esqueleto(2)))
 print(sc1)
 
 # (13) Conjunto de todas sus caras
@@ -63,6 +63,7 @@ print('(20) Caras: ', sc2.getCaras())
 print('(21) Dimension: ', sc2.dim())
 
 # (22) 1-Esqueleto
+print('(22) 1-Esqueleto del complejo: ',sc.esqueleto(1))
 
 # (23) Estrella del vértice 4
 print('(23) Estrella {0,1}: ', sc2.estrella((4,)))
@@ -74,3 +75,29 @@ print('(24) Característica de Euler: ', sc2.caract_euler())
 
 # (26) Número de componentes conexas
 print('(25) Componentes conexas: ', sc2.num_componentes_conexas())
+
+# EJEMPLO 4
+# (27) Consideramos el complejo
+sc1 = Complejo(list(sc.esqueleto(1)))
+
+# (28) Característica de Euler
+print('(28) Característica de Euler: ', sc1.caract_euler())
+
+# EJEMPLO 5
+# (29) Consideramos el complejo
+sc = Complejo([(0, 1, 2), (2, 3), (3, 4)])
+
+# (30) Conjunto de todos sus simplices
+print('(30) Conjunto de todos sus símplices: ', sc.getCaras())
+
+# (31) Dimensión del símplice
+print('(31) Dimensión del complejo: ',sc.dim())
+
+# (32) Calculamos el 1-esqueleto
+print('(32) 1-Esqueleto de complejo: ', sc.esqueleto(1))
+
+# (33) Estrella del vértice 2
+print('(33) Estrella del vértice 2: ',sc.estrella((2,)))
+
+# (34) Link del vértice 2
+print('(34) Obtenemos el link del vértice: ', sc.link((2,)))
