@@ -11,19 +11,26 @@ from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 class Complejo:
     """
     INFORMACION DE LOS TIPOS DE DATOS:
-    - Complejo Simplicial --> Set
-    - Simplice --> Tuplas
+    - Complejo Simplicial --> [simplices];[peso del simplice correspondiente]
+    - Simplice --> Tup
 
-    Ejemplo: {((vertex),Num),((vertex),Num),((vertex),Num)}
+    simplice = (1,2,3) x = contructor([(), (), ()]) --> complejo = [simplice, ....];[peso1, ....]
+    1. Añadir simplice(simplNuevo)--> complejo = [simplice, ...., SimplNuevo]
+    2. x = añadir(tuplaExistente, peso)--> complejo = [.....,simplice]; [....,peso]
+        -> en caso de uno sin peso --> meter el 0
 
-    simplice = (1,2,3) x = contructor([(), (), ()]) --> complejo = [simplice, ....] 1. Añadir simplice(simplNuevo)
-    --> complejo = [simplice, ...., SimplNuevo] 2. x = añadir(tuplaExistente, peso)--> complejo = [(simplice, peso),
-    .... , SimplNuevo] -> en caso de uno sin peso --> meter el 0
     """
 
     # recibe lista de los simplices maximales
     def __init__(self, maximal_simplice_list: list[tuple]):
-        self.simplices_maximales = set(maximal_simplice_list)
+        """
+        Recibimos una lista con los simplices maximales (tuplas).
+        Paralelamente tenemos una lista con los pesos.
+
+        El peso en la posicion i corresponde al simplice en la posicion i de la otra lista
+        """
+        self.simplices = maximal_simplice_list
+        self.pesos = [0.0] * len(maximal_simplice_list)
 
     def __str__(self):
         return "Complejo: " + str(self.simplices)
