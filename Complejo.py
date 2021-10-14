@@ -33,7 +33,7 @@ class Complejo:
         self.pesos = [0.0] * len(maximal_simplice_list)
 
     def __str__(self):
-        return "Complejo: " + str(self.simplices)
+        return "Complejo: " + str(self.simplices) + "Pesos: " + str(self.pesos)
 
     def dim(self):
         # la dimension del complejo es su simplice (lista) mas larga - 1
