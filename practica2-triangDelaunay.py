@@ -1,9 +1,14 @@
+import shutil
+
 import numpy as np
 from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 import matplotlib.colors
 from math import dist
 from Complejo import Complejo
+import os
+import glob
+from PIL import Image
 
 # import matplotlib as mpl
 
@@ -28,11 +33,6 @@ punto 0 -> points[0]
 """
 
 
-def filtracionAlphaComplejo(r: float, alpha_complejo: Complejo):
-    return alpha_complejo.filtration(r)
-
-
-
 # Diagrama de Voronoi
 def alphaComplejo(points):
     """
@@ -49,12 +49,11 @@ def alphaComplejo(points):
     print(simplicesDelaunay)
     print("------------------------------------------------------------")
 
-    #ordenar lista de listas
+    # ordenar lista de listas
     simplicesDelaunay = ordenar(simplicesDelaunay)
     print("------------------------------------------------------------")
     print(simplicesDelaunay)
     print("------------------------------------------------------------")
-
 
     print("SIMPLCES: ",
           simplicesDelaunay)  # printea array de simplices formados por los puntos (indica su indice en el array de points)
@@ -87,7 +86,6 @@ def alphaComplejo(points):
 
     # los vertices se añaden al alphaComplejo
     alphaComplejo = Complejo([])
-
     for index, point in enumerate(points):
         alphaComplejo.anadirSimplice([(index,)], 0)
 
@@ -106,13 +104,13 @@ def alphaComplejo(points):
         circuncentro = circumcenter(trianglePointsCoords)
         circunradio = dist(trianglePointsCoords[0], circuncentro)
 
+        # añadir simplice al alphaComplejo
         alphaComplejo.anadirSimplice([trianglePointsTuplesIndice], circunradio)
 
         # definir las aristas
         arista01 = [trianglePointsCoords[0], trianglePointsCoords[1]]
         arista12 = [trianglePointsCoords[1], trianglePointsCoords[2]]
         arista02 = [trianglePointsCoords[0], trianglePointsCoords[2]]
-
         arista01Tuples = (trianglePointsTuplesIndice[0], trianglePointsTuplesIndice[1])
         arista12Tuples = (trianglePointsTuplesIndice[1], trianglePointsTuplesIndice[2])
         arista02Tuples = (trianglePointsTuplesIndice[0], trianglePointsTuplesIndice[2])
@@ -136,18 +134,18 @@ def alphaComplejo(points):
                     hayPuntoDentro = True
                     break
             if not hayPuntoDentro:
-                # añadir arista -> quedarse con el menor peso
+                # añadir arista -> quedarse con el menor peso entre triang y arista
                 if aristaTupla in alphaComplejo.simplices:
-                    if alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] > 2 * radio:
-                        alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] = 2 * radio
+                    if alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] > radio:
+                        alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] = radio
                 else:
-                    alphaComplejo.anadirSimplice([aristaTupla], 2 * radio)
+                    alphaComplejo.anadirSimplice([aristaTupla], radio)
 
     return alphaComplejo
 
 
 def puntoMedio(arista: list):
-    return [(arista[0][0] + arista[1][0]) / 2, (arista[0][1] + arista[1][1]) / 2]
+    return [0.5 * (arista[0][0] + arista[1][0]), 0.5 * (arista[0][1] + arista[1][1])]
 
 
 def circumcenter(trianglePoints: list):
@@ -175,41 +173,62 @@ def ordenar(listaDeListas):
     return listaDeListas
 
 
+def printearAlphaComplejo(complejo: Complejo, puntos):
+    """
+    Dado un complejo y sus coordenadas en X,Y dibujamos la filtracion de complejos
 
-# def barycentre(points: list):
-#     """
-#
-#     Dada una lista de puntos en coords (x,y) nos devuelve el baricentro de la lista
-#     :imput [[X1,Y1],[X2,Y2],...]
-#     :return [BarX, BarY]
-#     """
-#     bar = [0,0]
-#     #aux para calcular la suma de las coords
-#     sum = [0,0]
-#     for eachPoint in points:
-#         #coords x
-#         sum[0] = sum[0] + eachPoint[0]
-#         #coords y
-#         sum[1] = sum[1] + eachPoint[1]
-#     bar[0] = sum[0] / len(points)
-#     bar[1] = sum[1] / len(points)
-#
-#     return bar
+    :param complejo:
+    :param puntos:
+    :return:
+    """
+    pesos = complejo.pesos.copy()
+    # Hacemos este cambio para eliminar los respetidos y no pintar dos veces o mas la misma grafica
+    pesos = set(pesos)
+    pesos = list(pesos)
+    # ordenamos para tener las graficas con una construccion progresiva
+    pesos.sort()
+    print("PESOS ORDENADOS: ", pesos)
+    for peso in pesos:
+        filtracion = complejo.filtration(peso)
+        filtracionCoords = []
+
+        for simplice in filtracion:
+            simpliceCoords = []
+            for each_point in simplice:
+                simpliceCoords.append(puntos[each_point])
+            filtracionCoords.append(simpliceCoords)
+        # print('Filtracion simplice: ', filtracionCoords)
+
+        for simplice in filtracionCoords:
+            if len(simplice) == 1:
+                plt.plot(simplice[0][0], simplice[0][1], 'ko')
+            elif len(simplice) == 2:
+                X = [item[0] for item in simplice]
+                Y = [item[1] for item in simplice]
+                plt.plot(X, Y, "k")
+            elif len(simplice) == 3:
+                t1 = plt.Polygon(simplice, color="green")
+                plt.gca().add_patch(t1)
+        #Codigo para guardar las graficas en un directorio en formato gift
+        if os.path.exists('alphaComplejo'):
+            shutil.rmtree('alphaComplejo')
+        os.makedirs('alphaComplejo')
+        plt.savefig('alphaComplejo/plot' + peso + '.png')
+        plt.show()
 
 
-# calcular delaunay meter arrays a formato de simplices y ordenamos lexicografico -> lo metemos como cocmplejo
-# simplicial
-# Crear nuevo complejo simplicial vacio -> añadir vertces, recorrer triang e introducir con los pesos del
-# critero y despues aristas
+def make_gif(frame_folder):
+    frames = [Image.open(image) for image in glob.glob(f"{frame_folder}/*.JPG")]
+    frame_one = frames[0]
+    frame_one.save("my_awesome.gif", format="GIF", append_images=frames,
+               save_all=True, duration=100, loop=0)
 
-# Luego representacion grafica
-
-# Añadir verts con peso 0
-# Añadir triang con peso (lo da algoritmo)
-# Luego aristas (peso algoritmo)
 
 # Asi consigo triang de delaunay con pesos (son los circunradios que los debo poder sacar de alguna de las clases)
 
 puntos = np.random.rand(10, 2)  # añadir como param
 complejo = alphaComplejo(puntos)
-print(complejo)
+# print(complejo)
+# print(complejo.filtration(0.5))
+printearAlphaComplejo(complejo, puntos)
+make_gif('alphaComplejo')
