@@ -188,7 +188,14 @@ def printearAlphaComplejo(complejo: Complejo, puntos):
     # ordenamos para tener las graficas con una construccion progresiva
     pesos.sort()
     print("PESOS ORDENADOS: ", pesos)
-    for peso in pesos:
+
+    #borrar directorio de guardar imagenes
+    if os.path.exists('alphaComplejo'):
+        shutil.rmtree('alphaComplejo')
+    os.makedirs('alphaComplejo')
+
+    for i in range(len(pesos)):
+        peso = pesos[i]
         filtracion = complejo.filtration(peso)
         filtracionCoords = []
 
@@ -209,16 +216,15 @@ def printearAlphaComplejo(complejo: Complejo, puntos):
             elif len(simplice) == 3:
                 t1 = plt.Polygon(simplice, color="green")
                 plt.gca().add_patch(t1)
+
         #Codigo para guardar las graficas en un directorio en formato gift
-        if os.path.exists('alphaComplejo'):
-            shutil.rmtree('alphaComplejo')
-        os.makedirs('alphaComplejo')
-        plt.savefig('alphaComplejo/plot' + peso + '.png')
-        plt.show()
+        plt.savefig('alphaComplejo/plot' + str(i) + '.png')
+        plt.close()
+        # plt.show()
 
 
 def make_gif(frame_folder):
-    frames = [Image.open(image) for image in glob.glob(f"{frame_folder}/*.JPG")]
+    frames = [Image.open(image) for image in glob.glob(f"{frame_folder}/*.png")]
     frame_one = frames[0]
     frame_one.save("my_awesome.gif", format="GIF", append_images=frames,
                save_all=True, duration=100, loop=0)
