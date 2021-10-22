@@ -17,9 +17,8 @@ DUDA: ¿Sacar dentro de alphaComplejo coords de puntos o indexPuntos?
 OJO: Mirar si al hacer dist saca distancia o distancia**2
 
 
-ESCUCHAD CHICOS que vamos a tener que aniadir una funcion que ordene de forma lexicografica los triangulinchis esos del tal Voronoi
-que si no en un futuro muy muy lejano pero en esta misma galaxia nos va a dar mas problemas con la homologia que el joker a batman
-
+Ey, falta de la practica 2 calcular la filtracion de vietoris-rips. Acordarse de que hay que hacer *0.5 si no va a acabar fallando
+Mirar definicion de VR --> simplice con diametro menor que 2r ->> pa entro
 
 Para la triangulacion nos devuelve los triangulos a partir de los puntos que forman los vertices aqui:
     (simplicesDelaunay)
