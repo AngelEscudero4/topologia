@@ -131,7 +131,7 @@ class Complejo:
 
     def filtration(self, valor: float):
         """
-        Obtenemos los simplices que tienen un peso menor a 'valor'.
+        Obtenemos los simplices que tienen un peso menor o igual a 'valor'.
         Crea una función que recupere el complejo simplicial formado por todos los  símplices cuyo flotante asociado sea menor o igual que un flotante dado.
         """
         res = []
@@ -149,7 +149,7 @@ class Complejo:
         """
         peso_res = None
         for i in range(len(self.simplices)):
-            print(self.simplices[i], self.pesos[i])
+            #print(self.simplices[i], self.pesos[i])
             # me quedo con el minimo de los pesos de sus cocaras
             if esCara(simpl, self.simplices[i]):
                 if peso_res is None:
