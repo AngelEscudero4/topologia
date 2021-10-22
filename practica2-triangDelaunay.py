@@ -7,10 +7,9 @@ import matplotlib.colors
 from math import dist
 from Complejo import Complejo
 import os
-import glob
-from PIL import Image
+import imageio
 
-# import matplotlib as mpl
+directorio = "alphaComplejo"
 
 """
 DUDA: ¿Sacar dentro de alphaComplejo coords de puntos o indexPuntos?
@@ -32,81 +31,55 @@ punto 0 -> points[0]
 """
 
 
-# Diagrama de Voronoi
 def alphaComplejo(points):
     """
+    Dado una serie de puntos calcula el complejo asociado con los pesos, siendo estos las distancias
+    Se sigue el algoritmo de alpha complejos de la clase 4
     :return:
     """
 
     vor = Voronoi(points)
-    # printeo voronoy y puntos
-    fig = voronoi_plot_2d(vor, show_vertices=False, line_width=2, line_colors='red')
+    # hago plot de voronoy y puntos (como no hago show se vera con el siguiente)
+    voronoi_plot_2d(vor, show_vertices=False, line_width=2, line_colors='red')
     plt.plot(points[:, 0], points[:, 1], 'ko')
+
     Del = Delaunay(points)
     simplicesDelaunay = Del.simplices
-    print("------------------------------------------------------------")
-    print(simplicesDelaunay)
-    print("------------------------------------------------------------")
-
     # ordenar lista de listas
     simplicesDelaunay = ordenar(simplicesDelaunay)
-    print("------------------------------------------------------------")
-    print(simplicesDelaunay)
-    print("------------------------------------------------------------")
 
-    print("SIMPLCES: ",
-          simplicesDelaunay)  # printea array de simplices formados por los puntos (indica su indice en el array de points)
+    print("SIMPLCES: ", simplicesDelaunay)
 
-    # plt.plot(vor.vertices[:, 0], vor.vertices[:, 1], 'bo') # mostrar los vertices interseccion entre triangulos
-
-    # printeo triangulos y puntos con etiquetas para ver que se corresponde al indice
-    # plt.triplot(points[:, 0], points[:, 1], simplicesDelaunay)
-    # plt.plot(points[:, 0], points[:, 1], 'o')
-    # for j, p in enumerate(points):
-    #     plt.text(p[0] - 0.01, p[1] + 0.01, j, ha='right')  # label the points
-    # plt.show()
-
-    print("PUNTOS: ", points)
-
-    # Triangulacion de Delaunay
+    # Printeo triangulacion de Delaunay
     c = np.ones(len(points))
     cmap = matplotlib.colors.ListedColormap("limegreen")
     plt.tripcolor(points[:, 0], points[:, 1], simplicesDelaunay, c, edgecolor="k", lw=2, cmap=cmap)
     plt.plot(points[:, 0], points[:, 1], 'ko')
     plt.show()
 
-    # Triangulación de Delaunay sobre el diagrama de Voronoi
-    # fig = voronoi_plot_2d(vor, show_vertices=False, line_width=2, line_colors='blue')
-    # c = np.ones(len(points))
-    # cmap = matplotlib.colors.ListedColormap("limegreen")
-    # plt.tripcolor(points[:, 0], points[:, 1], simplicesDelaunay, c, edgecolor="k", lw=2, cmap=cmap)
-    # plt.plot(points[:, 0], points[:, 1], 'ko')
-    # plt.show()
-
-    # los vertices se añaden al alphaComplejo
-    alphaComplejo = Complejo([])
+    # los vertices se añaden al alphaComplejo con peso 0
+    alphaComplejoRes = Complejo([])
     for index, point in enumerate(points):
-        alphaComplejo.anadirSimplice([(index,)], 0)
+        alphaComplejoRes.anadirSimplice([(index,)], 0)
 
     for simplice in simplicesDelaunay:
 
-        # extraer los tres puntos del triangulo
+        # extraer los tres puntos del triangulo -> extraigo por coords y por indices
         trianglePointsCoords = []
         puntos = []
         for indexPoint in simplice:
             trianglePointsCoords.append(list(points[indexPoint]))
             puntos.append(indexPoint)
-
         trianglePointsTuplesIndice = tuple(puntos)
 
-        # calcular circuncentro
+        # calcular circuncentro y circunradio
         circuncentro = circumcenter(trianglePointsCoords)
         circunradio = dist(trianglePointsCoords[0], circuncentro)
 
-        # añadir simplice al alphaComplejo
-        alphaComplejo.anadirSimplice([trianglePointsTuplesIndice], circunradio)
+        # añadir simplice (triang) al alphaComplejo
+        alphaComplejoRes.anadirSimplice([trianglePointsTuplesIndice], circunradio)
 
-        # definir las aristas
+        # definir las aristas --> defino por coords y por indices
         arista01 = [trianglePointsCoords[0], trianglePointsCoords[1]]
         arista12 = [trianglePointsCoords[1], trianglePointsCoords[2]]
         arista02 = [trianglePointsCoords[0], trianglePointsCoords[2]]
@@ -122,25 +95,25 @@ def alphaComplejo(points):
             hayPuntoDentro = False
 
             for point in points:
+                # si hay un punto dentro entonces su peso es el circunradio, a no ser que tuviera uno anterior mas peque
                 if dist(medio, point) < radio:
-                    # caso arista ya añadida
-                    if aristaTupla in alphaComplejo.simplices:
-                        # actualizamos el valor del peso
-                        if alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] > circunradio:
-                            alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] = circunradio
+                    # caso arista ya añadida -> actualizamos el peso
+                    if aristaTupla in alphaComplejoRes.simplices:
+                        if alphaComplejoRes.pesos[alphaComplejoRes.simplices.index(aristaTupla)] > circunradio:
+                            alphaComplejoRes.pesos[alphaComplejoRes.simplices.index(aristaTupla)] = circunradio
                     else:
-                        alphaComplejo.anadirSimplice([aristaTupla], circunradio)
+                        alphaComplejoRes.anadirSimplice([aristaTupla], circunradio)
                     hayPuntoDentro = True
-                    break
+                    break  # para asi no seguir mirando con el resto de puntos ya que no necesario
             if not hayPuntoDentro:
-                # añadir arista -> quedarse con el menor peso entre triang y arista
-                if aristaTupla in alphaComplejo.simplices:
-                    if alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] > radio:
-                        alphaComplejo.pesos[alphaComplejo.simplices.index(aristaTupla)] = radio
+                # añadir arista -> quedarse con el menor peso si ya estaba o añadirla nueva
+                if aristaTupla in alphaComplejoRes.simplices:
+                    if alphaComplejoRes.pesos[alphaComplejoRes.simplices.index(aristaTupla)] > radio:
+                        alphaComplejoRes.pesos[alphaComplejoRes.simplices.index(aristaTupla)] = radio
                 else:
-                    alphaComplejo.anadirSimplice([aristaTupla], radio)
+                    alphaComplejoRes.anadirSimplice([aristaTupla], radio)
 
-    return alphaComplejo
+    return alphaComplejoRes
 
 
 def puntoMedio(arista: list):
@@ -172,68 +145,85 @@ def ordenar(listaDeListas):
     return listaDeListas
 
 
-def printearAlphaComplejo(complejo: Complejo, puntos):
+def printearAlphaComplejoGIF(complejo: Complejo, puntos):
     """
-    Dado un complejo y sus coordenadas en X,Y dibujamos la filtracion de complejos
+    Dado un alphaComplejo y sus puntos dibujamos la formacion del alphaComplejo completo
 
     :param complejo:
     :param puntos:
     :return:
     """
+    # ordeno los pesos para printear las graficas en orden
     pesos = complejo.pesos.copy()
-    # Hacemos este cambio para eliminar los respetidos y no pintar dos veces o mas la misma grafica
-    pesos = set(pesos)
-    pesos = list(pesos)
-    # ordenamos para tener las graficas con una construccion progresiva
+    pesos = list(set(pesos))
     pesos.sort()
-    print("PESOS ORDENADOS: ", pesos)
+    # limpio las imagenes anteriores si existen
+    cleanDir()
 
-    #borrar directorio de guardar imagenes
-    if os.path.exists('alphaComplejo'):
-        shutil.rmtree('alphaComplejo')
-    os.makedirs('alphaComplejo')
-
+    # calculo todas las filtraciones posibles --> el nombre de cada grafica
+    # es el num de iteracion para luego hacer el gif en orden
     for i in range(len(pesos)):
         peso = pesos[i]
-        filtracion = complejo.filtration(peso)
-        filtracionCoords = []
+        filtracionAlphaComplejoPlot(complejo, peso, i, puntos)
 
-        for simplice in filtracion:
-            simpliceCoords = []
-            for each_point in simplice:
-                simpliceCoords.append(puntos[each_point])
-            filtracionCoords.append(simpliceCoords)
-        # print('Filtracion simplice: ', filtracionCoords)
-
-        for simplice in filtracionCoords:
-            if len(simplice) == 1:
-                plt.plot(simplice[0][0], simplice[0][1], 'ko')
-            elif len(simplice) == 2:
-                X = [item[0] for item in simplice]
-                Y = [item[1] for item in simplice]
-                plt.plot(X, Y, "k")
-            elif len(simplice) == 3:
-                t1 = plt.Polygon(simplice, color="green")
-                plt.gca().add_patch(t1)
-
-        #Codigo para guardar las graficas en un directorio en formato gift
-        plt.savefig('alphaComplejo/plot' + str(i) + '.png')
-        plt.close()
-        # plt.show()
+    # creo el gif
+    make_gif()
 
 
-def make_gif(frame_folder):
-    frames = [Image.open(image) for image in glob.glob(f"{frame_folder}/*.png")]
-    frame_one = frames[0]
-    frame_one.save("my_awesome.gif", format="GIF", append_images=frames,
-               save_all=True, duration=100, loop=0)
+def filtracionAlphaComplejoPlot(alphaComplejoTotal, peso, nombreFich, puntosCoord):
+    """
+    Dado un alphaComplejo genera la filtracion asociada al conjunto de puntos en el plano
+    :param alphaComplejoTotal:
+    :param nombreFich:
+    :param peso:
+    :param puntosCoord:
+    :return:
+    """
+    filtracion = alphaComplejoTotal.filtration(peso)
+    filtracionCoords = []
+    for simplice in filtracion:
+        simpliceCoords = []
+        for each_point in simplice:
+            simpliceCoords.append(puntosCoord[each_point])
+        filtracionCoords.append(simpliceCoords)
+    for simplice in filtracionCoords:
+        if len(simplice) == 1:
+            plt.plot(simplice[0][0], simplice[0][1], 'ko')
+        elif len(simplice) == 2:
+            X = [item[0] for item in simplice]
+            Y = [item[1] for item in simplice]
+            plt.plot(X, Y, "k")
+        elif len(simplice) == 3:
+            t1 = plt.Polygon(simplice, color="green")
+            plt.gca().add_patch(t1)
+    # Codigo para guardar las graficas
+    plt.savefig(directorio + "/" + str(nombreFich) + '.png')
+    plt.close()
 
 
-# Asi consigo triang de delaunay con pesos (son los circunradios que los debo poder sacar de alguna de las clases)
+def cleanDir():
+    # borrar directorio de guardar imagenes si existe y volverlo a crear
+    if os.path.exists(directorio):
+        shutil.rmtree(directorio)
+    os.makedirs(directorio)
 
-puntos = np.random.rand(10, 2)  # añadir como param
+
+def make_gif():
+    files = os.listdir(directorio)
+    files.sort(key=lambda x: int(x.split(".")[0]))
+    images = []
+    for filename in files:
+        images.append(imageio.imread(directorio + '/' + filename))
+    imageio.mimsave(directorio + '/' + 'awesome.gif', images, fps=3)
+
+
+# CODIGO PARA EJECUTAR LA PRACTICA --> CREAR PUNTOS RANDOM CALCULAR ALPHA COMPLEJO Y PRINTEAR EL ALPHACOMPLEJO
+puntos = np.random.rand(10, 2)
 complejo = alphaComplejo(puntos)
-# print(complejo)
-# print(complejo.filtration(0.5))
-printearAlphaComplejo(complejo, puntos)
-make_gif('alphaComplejo')
+# poner a true si queremos sacar una unica filtracion, false si queremos el gif
+soloUnaFiltracion = False
+if soloUnaFiltracion:
+    cleanDir()
+    filtracionAlphaComplejoPlot(complejo, 0.2, "prueba", puntos)
+else:
+    printearAlphaComplejoGIF(complejo, puntos)
