@@ -1,11 +1,6 @@
 from itertools import combinations
 import networkx as nx
-import numpy as np
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.colors
-
-from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 
 
 class Complejo:
@@ -138,6 +133,22 @@ class Complejo:
         for i in range(len(self.pesos)):
             if self.pesos[i] <= valor:
                 res.append(self.simplices[i])
+        return res
+
+    def obtenerPesoDeSimplice(self, simplice):
+        return self.pesos[self.simplices.index(simplice)]
+
+    def filtrationOrder(self):
+        # lo mejor seria usar esto, en caso de empates de peso desempatar con longitud del simplice
+        # peso --> obtenerPesoDeSimplice long y x
+        res = []
+        simplicesCopia = self.simplices[:]
+        pesosCopia = self.pesos[:]
+        for i in range(len(self.simplices)):
+            indiceElemMin = pesosCopia.index(min(pesosCopia))
+            res.append(simplicesCopia[indiceElemMin])
+            simplicesCopia.pop(indiceElemMin)
+            pesosCopia.pop(indiceElemMin)
         return res
 
     def devolverPeso(self, simpl):

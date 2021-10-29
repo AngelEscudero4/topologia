@@ -5,20 +5,13 @@ from scipy.spatial import Delaunay, Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 import matplotlib.colors
 from math import dist
-from Complejo import Complejo
+from practica1.Complejo import Complejo
 import os
 import imageio
 
 directorio = "alphaComplejo"
 
 """
-DUDA: ¿Sacar dentro de alphaComplejo coords de puntos o indexPuntos?
-OJO: Mirar si al hacer dist saca distancia o distancia**2
-
-
-Ey, falta de la practica 2 calcular la filtracion de vietoris-rips. Acordarse de que hay que hacer *0.5 si no va a acabar fallando
-Mirar definicion de VR --> simplice con diametro menor que 2r ->> pa entro
-
 Para la triangulacion nos devuelve los triangulos a partir de los puntos que forman los vertices aqui:
     (simplicesDelaunay)
 [[0 1 2], [0 1 3], ...]
@@ -217,13 +210,87 @@ def make_gif():
     imageio.mimsave(directorio + '/' + 'awesome.gif', images, fps=3)
 
 
+def VietorisRips(points):
+    """
+    Dado una serie de puntos calcula el complejo de Vietoris-Rips asociado con los pesos, siendo estos las distancias
+    Se sigue el algoritmo de Vietoris-Rips de la clase 4
+    :return:
+    """
+    # para cada simplice calcular la arista mas larga y ese sera el diam del simplice
+    #           --> maximos son de dimension 2
+    # primero aristas les asigno su distancia
+    # para cada triang le asigno el de la mayor arista
+
+    # pasar primero puntos a array de nºs --> [0,1,2...]
+    # crear un complejo con ello para usar getCarasDim de dim 0,1,2
+    # meto los puntos con peso 0
+    # meto las aristas con peso su diam * 0.5
+    # meto los triangs con con peso el de la arista de mayor diam --> diam*0.5 ==> bucle para dim hasta n-1 (n=nº de puntos)
+
+    lst = list(range(0, len(points)))  # range hace [a,b)
+
+    complejoAux = Complejo([tuple(lst)])
+    complejoVietoris = Complejo([])
+
+    # obtenemos las logitudes de las aristas
+    longitudes = {}  # CLAVE: 'punto1punto2', VALOR: dist(punto1, punto2)
+
+    for i in lst:
+        carasDimi = complejoAux.getCarasDim(i)
+
+        # metemos los puntos con peso 0
+        if i == 0:
+            for elem in carasDimi:
+                complejoVietoris.anadirSimplice(elem, 0.0)
+        # calculamos la longitud de la arista y lo metemos con peso 0.5 porq simpl € si diam(simpl) <= 2r
+        elif i == 1:
+            # print(carasDimi)
+            for elem in carasDimi:
+                valor = 0.5 * dist(points[elem[0]], points[elem[1]])
+                complejoVietoris.anadirSimplice([elem], valor)
+                longitudes.update({str(elem[0]) + '-' + str(elem[1]): valor})
+        # caso de dim mayor su peso sera el peso de la arista de mayor diam
+        else:
+            for elem in carasDimi:
+                complejoAux2 = Complejo([elem])
+                aristas = complejoAux2.getCarasDim(1)
+                peso_complejo = None
+                # obtengo la longitud maxima de las aristas que forman un simplice
+                for each_arista in aristas:
+                    if peso_complejo is None:
+                        peso_complejo = longitudes.get(str(each_arista[0]) + '-' + str(each_arista[1]))
+                    # si ya tiene un valor previo me quedo con el maximo
+                    else:
+                        peso_complejo = max(peso_complejo,
+                                            longitudes.get(str(each_arista[0]) + '-' + str(each_arista[1])))
+                complejoVietoris.anadirSimplice([elem], peso_complejo)
+
+    return complejoVietoris
+
+
+def filtracionComplejoVR(points, peso):
+    complejoVR = VietorisRips(points)
+    print(complejoVR)
+    filtracion = complejoVR.filtration(peso)
+    return filtracion
+
+
+
+
+
+
+
 # CODIGO PARA EJECUTAR LA PRACTICA --> CREAR PUNTOS RANDOM CALCULAR ALPHA COMPLEJO Y PRINTEAR EL ALPHACOMPLEJO
-puntos = np.random.rand(10, 2)
-complejo = alphaComplejo(puntos)
-# poner a true si queremos sacar una unica filtracion, false si queremos el gif
-soloUnaFiltracion = False
-if soloUnaFiltracion:
-    cleanDir()
-    filtracionAlphaComplejoPlot(complejo, 0.2, "prueba", puntos)
-else:
-    printearAlphaComplejoGIF(complejo, puntos)
+# puntos = np.random.rand(10, 2)
+# complejo = alphaComplejo(puntos)
+# # poner a true si queremos sacar una unica filtracion, false si queremos el gif
+# soloUnaFiltracion = False
+# if soloUnaFiltracion:
+#     cleanDir()
+#     filtracionAlphaComplejoPlot(complejo, 0.2, "prueba", puntos)
+# else:
+#     printearAlphaComplejoGIF(complejo, puntos)
+
+
+puntos = np.random.rand(4, 2)
+print('F en consola: ', filtracionComplejoVR(puntos, 0.3))
