@@ -189,6 +189,8 @@ class Complejo:
         """
         simplices_dim_p1 = list(self.getCarasDim(p-1))
         simplices_dim_p = list(self.getCarasDim(p))
+        simplices_dim_p1.sort()
+        simplices_dim_p.sort()
         #***matriz[fila][col]***
         matriz_borde = np.zeros((len(simplices_dim_p1), len(simplices_dim_p)))
 
