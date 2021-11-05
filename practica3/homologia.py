@@ -48,5 +48,26 @@ def forma_normal_Smith(matriz):
     Recibimos una matriz borde y valculamos su forma normal de Smith
     """
     forma_NS = None
+    #si a11 = 0 buscamos un elemento que sea 1 y los cambiamos de posicion
+
+    #si tenemos por debajo algun 1 lo quitamos sumando filas
+
+    #si tenemos a la dcha algun 1 lo quitamos sumando columnas
+
+    #cambiamos al siguiente pivote y volvemos a empezar
+
     return forma_NS
 
+def buscar_1(matriz, pos):
+    """
+    recibe una matriz y busca un uno a partir de una posicion recibida
+    La posicion tiene que ser o una lista o una tupla
+    """
+    pos_actual = pos
+    index =[-1, -1]
+
+    for i in range(pos[0],len(matriz)):
+        for j in range(pos[1], len(matriz[0])):
+            if matriz[i,j]:
+                return (i,j)
+    return index
