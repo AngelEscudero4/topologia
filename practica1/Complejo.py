@@ -187,18 +187,23 @@ class Complejo:
         Dado una dimension p construye la matriz de borde.
         Esta es una matriz de incidencia len(caras_dim_p-1)(v) x len(caras_dim_p)(h)
         """
-        simplices_dim_p1 = self.getCarasDim(p-1)
-        simplices_dim_p = self.getCarasDim(p)
+        simplices_dim_p1 = list(self.getCarasDim(p-1))
+        simplices_dim_p = list(self.getCarasDim(p))
         #***matriz[fila][col]***
-        matriz_borde = np.zeros(len(simplices_dim_p1), len(simplices_dim_p))
+        matriz_borde = np.zeros((len(simplices_dim_p1), len(simplices_dim_p)))
 
-        #hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
-        for i in len(simplices_dim_p1):
-            for j in len(simplices_dim_p):
+        # hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
+        for i in range(len(simplices_dim_p1)):
+            for j in range(len(simplices_dim_p)):
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
                     matriz_borde[i, j] = 1
                     
         return matriz_borde
+
+    def Betti_number(self, param):
+        pass
+
+
 
 def esCara(cara, simplice):
     """
