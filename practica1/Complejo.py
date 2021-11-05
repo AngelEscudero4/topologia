@@ -116,13 +116,22 @@ class Complejo:
         # devolvemos numero de comp conexas
         return len(list(nx.connected_components(G)))
 
+    # si no esta la cara meter con peso y si esta quedarse con el mas pequeño
     def anadirSimplice(self, simplices: list[tuple], valor: float):
         """
-        Dado un simplice nuevo lo añade al conjuntos de simplices maximales.
+        Dado un simplice nuevo lo añade al conjuntos de simplices maximales. Ademas añade sus caras o si
         """
-        for cadaSimp in simplices:
-            self.simplices.append(cadaSimp)
-            self.pesos.append(valor)
+        aux = Complejo(simplices)
+        for cara in aux.getCaras():
+            if cara in self.simplices:
+                self.pesos[self.simplices.index(cara)] = min(self.pesos[self.simplices.index(cara)], valor)
+            else:
+                self.simplices.append(cara)
+                self.pesos.append(valor)
+
+        # for cadaSimp in simplices:
+        #     self.simplices.append(cadaSimp)
+        #     self.pesos.append(valor)
 
     def filtration(self, valor: float):
         """
@@ -169,7 +178,6 @@ class Complejo:
                     peso_res = min(peso_res, self.pesos[i])
 
         return peso_res
-
 
 def esCara(cara, simplice):
     """

@@ -292,5 +292,5 @@ def filtracionComplejoVR(points, peso):
 #     printearAlphaComplejoGIF(complejo, puntos)
 
 
-puntos = np.random.rand(4, 2)
-print('F en consola: ', filtracionComplejoVR(puntos, 0.3))
+# puntos = np.random.rand(4, 2)
+# print('F en consola: ', filtracionComplejoVR(puntos, 0.3))
