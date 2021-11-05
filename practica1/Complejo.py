@@ -158,6 +158,9 @@ class Complejo:
             res.append(simplicesCopia[indiceElemMin])
             simplicesCopia.pop(indiceElemMin)
             pesosCopia.pop(indiceElemMin)
+        # aprovechamos para ordenar la estructura por peso --> UTIL PARA DIAGRAMAS DE PERSISTENCIA
+        self.simplices = res
+        self.pesos.sort()
         return res
 
     def devolverPeso(self, simpl):
