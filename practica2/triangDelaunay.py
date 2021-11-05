@@ -172,6 +172,8 @@ def filtracionAlphaComplejoPlot(alphaComplejoTotal, peso, nombreFich, puntosCoor
     :param puntosCoord:
     :return:
     """
+    if not os.path.exists(directorio):
+        os.makedirs(directorio)
     filtracion = alphaComplejoTotal.filtration(peso)
     filtracionCoords = []
     for simplice in filtracion:
@@ -198,7 +200,8 @@ def cleanDir():
     # borrar directorio de guardar imagenes si existe y volverlo a crear
     if os.path.exists(directorio):
         shutil.rmtree(directorio)
-    os.makedirs(directorio)
+    if not os.path.exists(directorio):
+        os.makedirs(directorio)
 
 
 def make_gif():
