@@ -190,13 +190,13 @@ class Complejo:
         simplices_dim_p1 = self.getCarasDim(p-1)
         simplices_dim_p = self.getCarasDim(p)
         #***matriz[fila][col]***
-        matriz_borde = [0*simplices_dim_p1][0*simplices_dim_p]
+        matriz_borde = np.zeros(len(simplices_dim_p1), len(simplices_dim_p))
 
         #hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
         for i in len(simplices_dim_p1):
             for j in len(simplices_dim_p):
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
-                    matriz_borde[i][j] = 1
+                    matriz_borde[i, j] = 1
                     
         return matriz_borde
 
@@ -232,3 +232,6 @@ def cerrarEstrella(estrella):
     for elem in estrella:
         estrella_cerrada = estrella_cerrada.union(getCarasDeSimplice(elem))
     return estrella_cerrada
+
+
+
