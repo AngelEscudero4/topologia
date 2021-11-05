@@ -244,7 +244,7 @@ def VietorisRips(points):
         # metemos los puntos con peso 0
         if i == 0:
             for elem in carasDimi:
-                complejoVietoris.anadirSimplice(elem, 0.0)
+                complejoVietoris.anadirSimplice([elem], 0.0)
         # calculamos la longitud de la arista y lo metemos con peso 0.5 porq simpl € si diam(simpl) <= 2r
         elif i == 1:
             # print(carasDimi)
@@ -275,7 +275,7 @@ def filtracionComplejoVR(points, peso):
     complejoVR = VietorisRips(points)
     print(complejoVR)
     filtracion = complejoVR.filtration(peso)
-    return filtracion
+    return complejoVR
 
 
 
