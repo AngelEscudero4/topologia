@@ -11,7 +11,6 @@ from practica1.Complejo import Complejo
 '''
 
 sc = Complejo([])
-sc.anadirSimplice([(0,), (1,), (2,), (3,), (4,)], 0.0)
 sc.anadirSimplice([(0, 1)], 1.0)
 sc.anadirSimplice([(1, 2), (2, 3), (2, 4)], 2.0)
 sc.anadirSimplice([(3, 4)], 3.0)
