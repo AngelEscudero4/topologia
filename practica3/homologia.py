@@ -53,8 +53,8 @@ def forma_normal_Smith(matriz):
         if pos_1 == [-1, -1]:
             return forma_NS
         # si hay algun otro 1 entonces cambiamos las posiciones -> cambiar fila y cambiar columnas
-        matriz[pivote[0]][pivote[1]] = 1
-        matriz[pos_1[0]][pos_1[1]] = 0
+        cambiar_filas(matriz, pos_1[0], pivote[0])
+        cambiar_columnas(matriz,  pos_1[1], pivote[1])#####revisar que este correcto
         # si tenemos por debajo algun 1 lo quitamos sumando filas
         for i in range(matriz[pivote[0]], len(matriz)):
             # recorremos la columna buscando un 1
@@ -114,4 +114,3 @@ def cambiar_columnas(matriz, columna1, columna2):
         x[columna1] = x[columna2]
         x[columna2] = columnaAux[i]
         i = i + 1
-
