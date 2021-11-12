@@ -46,9 +46,11 @@ def forma_normal_Smith(matriz):
     Recibimos una matriz borde y valculamos su forma normal de Smith
     """
     forma_NS = None
-    pivote = [1, 1]
+    pivote = [0,0]
     # si a11 = 0 buscamos un elemento que sea 1 y los cambiamos de posicion
-    while not (matriz(pivote)):
+    print(pivote)
+    print(matriz[pivote[0]][pivote[1]])
+    while not (matriz[pivote[0]][pivote[1]]):
         pos_1 = buscar_1(matriz, pivote)
         # si no hemos encontrado ningun 1 hemos acabado
         if pos_1 == [-1, -1]:
