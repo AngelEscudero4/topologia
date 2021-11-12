@@ -47,14 +47,35 @@ def forma_normal_Smith(matriz):
     Recibimos una matriz borde y valculamos su forma normal de Smith
     """
     forma_NS = None
+    pivote = [1, 1]
     # si a11 = 0 buscamos un elemento que sea 1 y los cambiamos de posicion
+    while not (matriz(pivote)):
+        pos_1 = buscar_1(matriz, pivote)
+        # si no hemos encontrado ningun 1 hemos acabado
+        if pos_1 == [-1, -1]:
+            return forma_NS
+        # si hay algun otro 1 entonces cambiamos las posiciones -> cambiar fila y cambiar columnas
+        matriz[pivote[0]][pivote[1]] = 1
+        matriz[pos_1[0]][pos_1[1]] = 0
+        # si tenemos por debajo algun 1 lo quitamos sumando filas
+        for i in range(matriz[pivote[0]], len(matriz)):
+            # recorremos la columna buscando un 1
+            if matriz[pivote[0]][i] == 1:
+                # sumamos la fila del pivote con la que tiene un 1
+                sumar_dos_filas(matriz, pivote[1], i)
+        # si tenemos algun 1 a la derecha lo quitamos sumando columnas
+        for j in range(matriz[pivote[1]], len(matriz[0])):
+            # recorremos la fila buscando un 1
+            if matriz[j][pivote[1]] == 1:
+                # sumamos la fila del pivote con la que tiene un 1
+                sumar_dos_columnas(matriz, pivote[0], j)
+        # aqui ya deberia estar limpio para el pivote
 
-    # si tenemos por debajo algun 1 lo quitamos sumando filas
-
-    # si tenemos a la dcha algun 1 lo quitamos sumando columnas
-
-    # cambiamos al siguiente pivote y volvemos a empezar
-
+        # avanzamos el pivote
+        pivote[0] += 1
+        pivote[1] += 1
+    # asignamos el resultado
+    forma_NS = matriz
     return forma_NS
 
 
@@ -68,6 +89,6 @@ def buscar_1(matriz, pos):
 
     for i in range(pos[0], len(matriz)):
         for j in range(pos[1], len(matriz[0])):
-            if matriz[i, j]:
-                return (i, j)
+            if matriz(i, j):
+                return [i, j]
     return index
