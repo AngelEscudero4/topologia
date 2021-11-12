@@ -203,6 +203,8 @@ class Complejo:
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
                     matriz_borde[i, j] = 1
 
+        matriz_borde.tolist()
+
         return matriz_borde
 
     def Betti_number(self, p):
