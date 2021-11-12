@@ -40,12 +40,6 @@ def sumar_dos_columnas(matriz, col_base, col_objetivo):
     for i in range(num_filas(matriz)):
         matriz[i][col_objetivo] = col_res[i]
 
-def sumar_elems_z2(elem1, elem2):
-    """
-    Dados dos elementos en Z2 devuelve su suma en Z2
-    """
-    return  (elem1 + elem2) % 2
-
 def forma_normal_Smith(matriz):
     """
     Recibimos una matriz borde y valculamos su forma normal de Smith
@@ -98,14 +92,7 @@ def buscar_1(matriz, pos):
     return index
 
 
-"""
-Tenemos algo así:
-
-P = array([[1, 7, 3],
-           [4, 8, 6]])
-           
-"""
-def cambiarFilas(matriz, fila1, fila2):
+def cambiar_filas(matriz, fila1, fila2):
     """
     Tomo los valores de la fila1 y los pongo en la fila2, y al reves
     """
@@ -115,12 +102,16 @@ def cambiarFilas(matriz, fila1, fila2):
 
     print(matriz)
 
-def cambiarColumnas(matriz, columna1, columna2):
+def cambiar_columnas(matriz, columna1, columna2):
     """
     Tomo los valores de la columna1 y los pongo en la columna2, y al reves
     """
-    columnaAux = [0]*num_filas(matriz)
-    matriz[:][columna1] = matriz[:][columna2]
-    matriz[:][columna2] = columnaAux
+    columnaAux = [x[columna1] for x in matriz]
 
-    print(matriz)
+    i = 0
+
+    for x in matriz:
+        x[columna1] = x[columna2]
+        x[columna2] = columnaAux[i]
+        i = i + 1
+
