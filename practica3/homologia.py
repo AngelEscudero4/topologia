@@ -40,6 +40,7 @@ def sumar_dos_columnas(matriz, col_base, col_objetivo):
     for i in range(num_filas(matriz)):
         matriz[i][col_objetivo] = col_res[i]
 
+
 def forma_normal_Smith(matriz):
     """
     Recibimos una matriz borde y valculamos su forma normal de Smith
@@ -97,19 +98,21 @@ def cambiar_filas(matriz, fila1, fila2):
     Tomo los valores de la fila1 y los pongo en la fila2, y al reves
     """
     filaAux = matriz[fila1]
-    matriz[fila1]=matriz[fila2]
-    matriz[fila2]=filaAux
+    matriz[fila1] = matriz[fila2]
+    matriz[fila2] = filaAux
 
     print(matriz)
+
 
 def cambiar_columnas(matriz, columna1, columna2):
     """
     Tomo los valores de la columna1 y los pongo en la columna2, y al reves
     """
+    # copio columna
     columnaAux = [x[columna1] for x in matriz]
 
+    # voy elto a elto intercambiandolos
     i = 0
-
     for x in matriz:
         x[columna1] = x[columna2]
         x[columna2] = columnaAux[i]
