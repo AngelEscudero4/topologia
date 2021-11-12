@@ -92,3 +92,4 @@ def buscar_1(matriz, pos):
             if matriz(i, j):
                 return [i, j]
     return index
+

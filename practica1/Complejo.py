@@ -2,6 +2,9 @@ from itertools import combinations
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import List
+
+import practica3.homologia as hom
 
 class Complejo:
     """
@@ -69,7 +72,7 @@ class Complejo:
         Calculamos el n-esqueleto de 'self' siendo n el valor pasado como parámetro llamado 'num'
         """
         esqueleto = set()
-        for i in range(num+1):
+        for i in range(num + 1):
             esqueleto = esqueleto.union(self.getCarasDim(i))
         return esqueleto
 
@@ -172,7 +175,7 @@ class Complejo:
         """
         peso_res = None
         for i in range(len(self.simplices)):
-            #print(self.simplices[i], self.pesos[i])
+            # print(self.simplices[i], self.pesos[i])
             # me quedo con el minimo de los pesos de sus cocaras
             if esCara(simpl, self.simplices[i]):
                 if peso_res is None:
@@ -187,11 +190,11 @@ class Complejo:
         Dado una dimension p construye la matriz de borde.
         Esta es una matriz de incidencia len(caras_dim_p-1)(v) x len(caras_dim_p)(h)
         """
-        simplices_dim_p1 = list(self.getCarasDim(p-1))
+        simplices_dim_p1 = list(self.getCarasDim(p - 1))
         simplices_dim_p = list(self.getCarasDim(p))
         simplices_dim_p1.sort()
         simplices_dim_p.sort()
-        #***matriz[fila][col]***
+        # ***matriz[fila][col]***
         matriz_borde = np.zeros((len(simplices_dim_p1), len(simplices_dim_p)))
 
         # hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
@@ -199,12 +202,31 @@ class Complejo:
             for j in range(len(simplices_dim_p)):
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
                     matriz_borde[i, j] = 1
-                    
+
         return matriz_borde
 
-    def Betti_number(self, param):
-        pass
+    def Betti_number(self, p):
+        # vamos a construir la matriz borde para param (en H) y param-1 (en V)
+        # tenemos que calcular filas de 1's -->B_p-1
+        # tenemos que calcular columnas - columnas de 1's --> Z_p
+        # Numero de betti para p es B_p - Z_p
+        # con lo cual si queremos el numero de betti para p tenemos que sacar la forma normal de Smith para p y p+1
+        # OBS: los numeros de betti tiene sentido calcularlos hasta dim(complejo)
 
+        # Si p es menor que cero o mayor que dim(complejo) su numero de betti es 0
+        if p < 0 or p > self.dim():
+            return 0
+        matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
+        matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p+1))
+
+        matriz_p_np = np.array(matriz_p)
+        matriz_p1_np = np.array(matriz_p1)
+
+        Zp = hom.num_columnas(matriz_p) - np.ptp(matriz_p_np) # n columnas -  n columnas de 1's (rango) --> Z_p
+        Bp =  np.ptp(matriz_p1_np)
+
+        betti = Bp - Zp
+        return betti
 
 
 def esCara(cara, simplice):
@@ -239,6 +261,3 @@ def cerrarEstrella(estrella):
     for elem in estrella:
         estrella_cerrada = estrella_cerrada.union(getCarasDeSimplice(elem))
     return estrella_cerrada
-
-
-
