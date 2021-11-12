@@ -1,5 +1,4 @@
 import practica1.Complejo
-import numpy as np
 
 
 def num_filas(M):
@@ -41,6 +40,11 @@ def sumar_dos_columnas(matriz, col_base, col_objetivo):
     for i in range(num_filas(matriz)):
         matriz[i][col_objetivo] = col_res[i]
 
+def sumar_elems_z2(elem1, elem2):
+    """
+    Dados dos elementos en Z2 devuelve su suma en Z2
+    """
+    return  (elem1 + elem2) % 2
 
 def forma_normal_Smith(matriz):
     """
@@ -92,3 +96,31 @@ def buscar_1(matriz, pos):
             if matriz(i, j):
                 return [i, j]
     return index
+
+
+"""
+Tenemos algo así:
+
+P = array([[1, 7, 3],
+           [4, 8, 6]])
+           
+"""
+def cambiarFilas(matriz, fila1, fila2):
+    """
+    Tomo los valores de la fila1 y los pongo en la fila2, y al reves
+    """
+    filaAux = matriz[fila1]
+    matriz[fila1]=matriz[fila2]
+    matriz[fila2]=filaAux
+
+    print(matriz)
+
+def cambiarColumnas(matriz, columna1, columna2):
+    """
+    Tomo los valores de la columna1 y los pongo en la columna2, y al reves
+    """
+    columnaAux = [0]*num_filas(matriz)
+    matriz[:][columna1] = matriz[:][columna2]
+    matriz[:][columna2] = columnaAux
+
+    print(matriz)
