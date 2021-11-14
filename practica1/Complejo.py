@@ -2,9 +2,9 @@ from itertools import combinations
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import List
 
 import practica3.homologia as hom
+
 
 class Complejo:
     """
@@ -189,12 +189,14 @@ class Complejo:
         """
         Dado una dimension p construye la matriz de borde.
         Esta es una matriz de incidencia len(caras_dim_p-1)(v) x len(caras_dim_p)(h)
+
+        COMO ACCEDER A ELEM DE MATRIZ: matriz[fila][col]
         """
         simplices_dim_p1 = list(self.getCarasDim(p - 1))
         simplices_dim_p = list(self.getCarasDim(p))
         simplices_dim_p1.sort()
         simplices_dim_p.sort()
-        # ***matriz[fila][col]***
+
         matriz_borde = np.zeros((len(simplices_dim_p1), len(simplices_dim_p)))
 
         # hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
@@ -203,7 +205,7 @@ class Complejo:
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
                     matriz_borde[i, j] = 1
 
-        matriz_borde.tolist()
+        matriz_borde = matriz_borde.tolist()
 
         return matriz_borde
 
@@ -215,20 +217,36 @@ class Complejo:
         # con lo cual si queremos el numero de betti para p tenemos que sacar la forma normal de Smith para p y p+1
         # OBS: los numeros de betti tiene sentido calcularlos hasta dim(complejo)
 
+        if p == 0:
+            matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p + 1))
+            matriz_p1_np = np.array(matriz_p1)
+            Bp = np.linalg.matrix_rank(matriz_p1_np)
+            Zp = len(self.getCarasDim(0))  # num de puntos
+
+            betti = Zp - Bp
+            return betti
+
+        elif p == self.dim():
+            matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
+            matriz_p_np = np.array(matriz_p)
+            Zp = hom.num_columnas(matriz_p) - np.linalg.matrix_rank(matriz_p_np)
+            return Zp  # asi porque Bp = 0 (trivial)
+
         # Si p es menor que cero o mayor que dim(complejo) su numero de betti es 0
-        if p < 0 or p > self.dim():
+        elif p < 0 or p > self.dim():
             return 0
-        matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
-        matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p+1))
+        else:
+            matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
+            matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p + 1))
 
-        matriz_p_np = np.array(matriz_p)
-        matriz_p1_np = np.array(matriz_p1)
+            matriz_p_np = np.array(matriz_p)
+            matriz_p1_np = np.array(matriz_p1)
 
-        Zp = hom.num_columnas(matriz_p) - np.ptp(matriz_p_np) # n columnas -  n columnas de 1's (rango) --> Z_p
-        Bp =  np.ptp(matriz_p1_np)
+            Zp = hom.num_columnas(matriz_p) - np.linalg.matrix_rank(matriz_p_np)  # n cols -  rango --> Z_p
+            Bp = np.linalg.matrix_rank(matriz_p1_np)
 
-        betti = Bp - Zp
-        return betti
+            betti = Zp - Bp
+            return betti
 
 
 def esCara(cara, simplice):
