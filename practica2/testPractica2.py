@@ -23,6 +23,7 @@ points = []
 
 # EJEMPLO 1
 if ejemplo == 1:
+    print("EJEMPLO 1")
     points = np.array([(0.38021546727456423, 0.46419202339598786), (0.7951628297672293, 0.49263630135869474),
                        (0.566623772375203, 0.038325621649018426), (0.3369306814864865, 0.7103735061134965),
                        (0.08272837815822842, 0.2263273314352896), (0.5180166301873989, 0.6271769943824689),
@@ -31,6 +32,7 @@ if ejemplo == 1:
 
 # EJEMPLO 2
 elif ejemplo == 2:
+    print("EJEMPLO 2")
     points = np.array([[0.8957641450573793, 0.2950833519989374],
                        [0.028621391963087994, 0.9440875759025237],
                        [0.517621505875702, 0.1236620161847416],
@@ -44,6 +46,7 @@ elif ejemplo == 2:
 
 # EJEMPLO 3
 elif ejemplo == 3:
+    print("EJEMPLO 3")
     points = np.array([(0.8753299639906736, 0.5452963206013219),
                        (0.915335120559448, 0.8622822047328554),
                        (0.9411759819184322, 0.2748278885761678),
@@ -67,6 +70,7 @@ elif ejemplo == 3:
 
 # EJEMPLO 4
 elif ejemplo == 4:
+    print("EJEMPLO 4")
     points = np.array([[0.7649936, -6.49105706],
                        [-0.26047978, 3.17414802],
                        [5.16486466, -2.77709227],
@@ -92,8 +96,8 @@ vor = Voronoi(points)
 
 alpha = pr2.alphaComplejo(points)
 
-print('(25). Filtracion del complejo ordenado por umbral\n', alpha.filtrationOrder())
-print('(26). Lista de umbrales\n', alpha.pesos)
+print('Filtracion del complejo ordenado por umbral\n', alpha.filtrationOrder())
+print('Lista de umbrales\n', alpha.pesos)
 
 pr2.filtracionAlphaComplejoPlot(alpha, 0.26, 'complejo_r026', points)
 
