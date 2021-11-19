@@ -141,10 +141,14 @@ class Complejo:
         Obtenemos los simplices que tienen un peso menor o igual a 'valor'.
         Crea una función que recupere el complejo simplicial formado por todos los  símplices cuyo flotante asociado sea menor o igual que un flotante dado.
         """
+        # primero los ordeno para optimizar, una vez llego al primero que tiene mayor peso se que puedo parar
+        self.filtrationOrder()
         res = []
         for i in range(len(self.pesos)):
             if self.pesos[i] <= valor:
                 res.append(self.simplices[i])
+            else:
+                return res
         return res
 
     def obtenerPesoDeSimplice(self, simplice):
