@@ -1,6 +1,7 @@
 from practica1 import Complejo
 import numpy as np
 from practica3 import homologia
+from matplotlib import pyplot as plt
 
 
 def matriz_borde_generalizada(complejo: Complejo):
@@ -75,10 +76,28 @@ def get_emparejamientos(matriz):
     algoritmo_emparejamiento_nacimiento_muerte(matriz)
 
     # recorremos las columnas
-    for j in homologia.num_columnas(matriz):
+    for j in range(homologia.num_columnas(matriz)):
         # sacamos su low y creamos una parejita
         index_low = get_low(get_columna(matriz, j))
         # metemos la pareja
         emparejamientos.append((index_low, j))
 
     return emparejamientos
+
+
+#### ESTA MAL !!!!!!!!!!!!!!
+def diagrama_barras(complejo, emparejamientos, simplices):
+    complejo.filtrationOrder()
+    print(complejo.simplices)
+    print(complejo.pesos)
+    lista_puntos = []
+    for (low, columna) in emparejamientos:
+        if low != -1:
+            # low sera la fila y col columna --> sacamos simplices para sus pesos y pintar el punto
+            (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
+            lista_puntos.append((x,y))
+
+    # ahora pintamos los puntos
+    # plt.plot(lista_puntos)
+    # plt.show()
+    print(lista_puntos)
