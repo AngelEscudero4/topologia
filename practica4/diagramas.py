@@ -85,6 +85,8 @@ def get_emparejamientos(matriz):
     return emparejamientos
 
 
+# NOS FALTA POR MIRAR EL DE LA PRACTICA 2 QUE TENGAMOS TODOS LOS EJEMPLOS --> EL DE CALCULAR LOS NUMS DE BETTI PARA LOS
+# DISTINTOS OBJETOS
 #### ESTA MAL !!!!!!!!!!!!!!
 def diagrama_barras(complejo, emparejamientos, simplices):
     complejo.filtrationOrder()
