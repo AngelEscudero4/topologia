@@ -59,3 +59,27 @@ def get_low(col):
 
 def get_columna(matriz, indice):
     return [x[indice] for x in matriz]
+
+
+def get_emparejamientos(matriz):
+    """
+    Dada una matriz de borde generalizada calculamos el algoritmo para reducir la matriz.
+    Despues calculamos los emparejamientos para cada columna
+
+    Emparejamientos son [low(j),j]
+    ##### OJO luego hay que sacar los simplices de la lista 'simplices' de matriz_borde_generalizada()
+
+    Para pasarlo luego a puntos en el diagrama hay que coger los pesos de los simplices
+    """
+    emparejamientos = []
+    algoritmo_emparejamiento_nacimiento_muerte_y_otras_cosas_que_todavia_no_hemos_demostrado_que_funcionan_pero_acabaremos_demostrando(
+        matriz)
+
+    # recorremos las columnas
+    for j in homologia.num_columnas(matriz):
+        # sacamos su low y creamos una parejita
+        index_low = get_low(get_columna(matriz, j))
+        # metemos la pareja
+        emparejamientos.append((index_low, j))
+
+    return emparejamientos
