@@ -72,8 +72,7 @@ def get_emparejamientos(matriz):
     Para pasarlo luego a puntos en el diagrama hay que coger los pesos de los simplices
     """
     emparejamientos = []
-    algoritmo_emparejamiento_nacimiento_muerte_y_otras_cosas_que_todavia_no_hemos_demostrado_que_funcionan_pero_acabaremos_demostrando(
-        matriz)
+    algoritmo_emparejamiento_nacimiento_muerte(matriz)
 
     # recorremos las columnas
     for j in homologia.num_columnas(matriz):
