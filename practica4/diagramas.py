@@ -33,16 +33,20 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
     # dada una columna sacamos su low()
     # miramos en las columnas de su izqda y si tienen el mismo low borramos ese low en la de la izqda
     for i in range(homologia.num_columnas(matriz)):
-        index_low = get_low(get_columna(matriz, i))
-        # si existe low en esa columna
-        if index_low != -1:
-            # borramos los low iguales de columnas anteriores
-            for otro_i in range(i):
-                # si tienen el mismo low
-                if get_low(get_columna(matriz, otro_i)) == index_low:
-                    # sumamos las dos columnas
-                    homologia.sumar_dos_columnas(matriz, i, otro_i)
-
+        repetir = True #V pq queremos que lo ejeute al menos una vez (equiv a do:while)
+        while repetir:
+            repetir = False #Si no modificamos la columna es pq no hay un low igual
+            index_low = get_low(get_columna(matriz, i))
+            # si existe low en esa columna
+            if index_low != -1:
+                # borramos los low iguales de columnas anteriores
+                for otro_i in range(i):
+                    # si tienen el mismo low
+                    if get_low(get_columna(matriz, otro_i)) == index_low:
+                        # sumamos las dos columnas en la que estamos actualmente
+                        homologia.sumar_dos_columnas(matriz, otro_i, i)
+                        #si encontramos otro low ahora este ha sido modificado y debriamos mirar si este nuevo se vuelve a tener
+                        repetir = True
     return matriz
 
 
