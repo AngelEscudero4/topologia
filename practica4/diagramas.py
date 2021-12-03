@@ -33,9 +33,9 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
     # dada una columna sacamos su low()
     # miramos en las columnas de su izqda y si tienen el mismo low borramos ese low en la de la izqda
     for i in range(homologia.num_columnas(matriz)):
-        repetir = True #V pq queremos que lo ejeute al menos una vez (equiv a do:while)
+        repetir = True  # V pq queremos que lo ejeute al menos una vez (equiv a do:while)
         while repetir:
-            repetir = False #Si no modificamos la columna es pq no hay un low igual
+            repetir = False  # Si no modificamos la columna es pq no hay un low igual
             index_low = get_low(get_columna(matriz, i))
             # si existe low en esa columna
             if index_low != -1:
@@ -45,7 +45,7 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
                     if get_low(get_columna(matriz, otro_i)) == index_low:
                         # sumamos las dos columnas en la que estamos actualmente
                         homologia.sumar_dos_columnas(matriz, otro_i, i)
-                        #si encontramos otro low ahora este ha sido modificado y debriamos mirar si este nuevo se vuelve a tener
+                        # si encontramos otro low ahora este ha sido modificado y debriamos mirar si este nuevo se vuelve a tener
                         repetir = True
     return matriz
 
@@ -82,6 +82,7 @@ def get_emparejamientos(matriz):
     # recorremos las columnas
     for j in range(homologia.num_columnas(matriz)):
         # sacamos su low y creamos una parejita
+        # if index_low !=-1: # revisar si hace falta o no
         index_low = get_low(get_columna(matriz, j))
         # metemos la pareja
         emparejamientos.append((index_low, j))
@@ -91,19 +92,73 @@ def get_emparejamientos(matriz):
 
 # NOS FALTA POR MIRAR EL DE LA PRACTICA 2 QUE TENGAMOS TODOS LOS EJEMPLOS --> EL DE CALCULAR LOS NUMS DE BETTI PARA LOS
 # DISTINTOS OBJETOS
-#### ESTA MAL !!!!!!!!!!!!!!
-def diagrama_barras(complejo, emparejamientos, simplices):
+
+
+def conseguir_puntos_diagrama(complejo, emparejamientos, simplices):
     complejo.filtrationOrder()
     print(complejo.simplices)
     print(complejo.pesos)
     lista_puntos = []
-    for (low, columna) in emparejamientos:
+    lista_aristas = []
+    for (low, columna) in emparejamientos:  # simplices[low] es nacimiento y simplices[col] es muerte
         if low != -1:
-            # low sera la fila y col columna --> sacamos simplices para sus pesos y pintar el punto
-            (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
-            lista_puntos.append((x,y))
+            if complejo.devolverPeso(simplices[low]) == 0:
+                # low sera la fila y col columna --> sacamos simplices para sus pesos y pintar el punto
+                (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
+                lista_puntos.append([x, y])
+            else:
+                (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
+                lista_aristas.append([x, y])
+
+    lista_puntos.append(
+        (0, complejo.pesos[-1] + 1))  # añadimos el punto del infinito que sabemos que siempre va a estar ahi
+    # peso de la comp conexa del 0
 
     # ahora pintamos los puntos
     # plt.plot(lista_puntos)
     # plt.show()
     print(lista_puntos)
+    print(lista_aristas)
+    return lista_puntos, lista_aristas
+
+
+def diagrama_barras(puntos_diagrama, arista_diagrama):
+    peso_max = puntos_diagrama[-1][1]
+    altura = 0.5
+    for [x, y] in puntos_diagrama:
+        intervalo = np.linspace(x, y)
+        plt.plot(intervalo, [altura] * len(intervalo), 'b')
+        altura += 0.5
+
+    altura += 0.25
+    intervalo = np.linspace(-0.5, peso_max+0.5)
+    plt.plot(intervalo, [altura] * len(intervalo), 'k')
+    altura += 0.75
+
+    for [x, y] in arista_diagrama:
+        intervalo = np.linspace(x, y)
+        plt.plot(intervalo, [altura] * len(intervalo), 'r')
+        altura += 0.5
+
+    plt.yticks([])
+    plt.show()
+
+
+def diagrama_persistencia(puntos_diagrama, arista_diagrama):
+    peso_max = puntos_diagrama[-1][1]
+
+    # si tenemos puntos los pintamos (H0)
+    if len(puntos_diagrama) > 0:
+        puntos_diagrama = np.array(puntos_diagrama)
+        plt.scatter(puntos_diagrama[:, 0], puntos_diagrama[:, 1], color="blue")
+    # H1
+    if len(arista_diagrama) > 0:
+        arista_diagrama = np.array(arista_diagrama)
+        plt.scatter(arista_diagrama[:, 0], arista_diagrama[:, 1], color="red")
+
+    # mostramos los ejes discontinuos
+    intervalo = np.linspace(0, peso_max)
+    plt.plot(intervalo, intervalo, 'k--')
+    plt.plot(intervalo, [peso_max] * len(intervalo), 'k--')
+
+    plt.show()
