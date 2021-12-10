@@ -5,12 +5,21 @@ from matplotlib import pyplot as plt
 
 
 def simplices_ordenados(complejo: Complejo):
-    # primero sacamos todos los simplices posibles
+    # primero sacamos todos los simplices posibles, luego los ordenamos tanto por longitud como por los eltos
     simplices = complejo.getCaras()
     simplices = list(simplices)
-    # ahora vamos a tener que ordenarlos por longitud
     simplices.sort(key=len)
-    return simplices
+
+    simplicesCopia = []
+
+    # aqui ya los tenemos en longitud, ahora cogemos de cada longitud y los ordenamos
+    for i in range(1, len(simplices[-1])):
+        y = filter(lambda x: (len(x) == i), simplices)
+        y = list(y)
+        y.sort()
+        simplicesCopia = simplicesCopia + y
+
+    return simplicesCopia
 
 
 def matriz_borde_generalizada(complejo: Complejo):
@@ -18,7 +27,7 @@ def matriz_borde_generalizada(complejo: Complejo):
     Dado un complejo simplicial calculamos su matriz borde generalizada
     *** MATRIZ [FILAS][COL] ***
     """
-    simplices = simplices_ordenados(complejo)
+    simplices = complejo.simplices
     print(simplices)
     # ahora tenemos que hacer la matriz de incidencia
     matriz = np.zeros((len(simplices), len(simplices)))
@@ -44,6 +53,7 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
             index_low = get_low(get_columna(matriz, i))
             # si existe low en esa columna
             if index_low != -1:
+                print("ENCONTRADO")
                 # buscamos lows anteriores en el mismo sitio
                 for otro_i in range(i):
                     # si tienen el mismo low
@@ -51,8 +61,9 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
                         # sumamos las dos columnas, en la que estamos actualmente ponemos el resultado
                         homologia.sumar_dos_columnas(matriz, otro_i, i)
                         # si encontramos otro low ahora este ha sido modificado y debriamos mirar si este nuevo se
-                        # vuelve a repetir
+                        # vuelve a repetir desde la primera columna
                         repetir = True
+                        break
     return matriz
 
 
@@ -109,22 +120,10 @@ def conseguir_puntos_diagrama(complejo):
     emparejamientos = get_emparejamientos(matriz_borde_gen)
     print("[low-columna]", emparejamientos)
 
-    ##############################################################################
-    # LOS EMPAREJAMIENTOS ESTAN BIEN, HAY QUE MIRARLO A VER!!!!
-    ##############################################################################
-
-
     # cogemos los simplices ordenados --> OJO QUE TIENEN QUE COINCIDIR CON LOS DE maatriz_borde_gen
-    simplices = simplices_ordenados(complejo)
+    simplices = complejo.simplices
     print(simplices)
 
-    # ordenamos los simplices por pesos para poder sacar el asociado al simplice
-    print(complejo.simplices)
-    print(complejo.pesos)
-
-    complejo.filtrationOrder()
-    print(complejo.simplices)
-    print(complejo.pesos)
     lista_puntos = []
     lista_aristas = []
     for (low, columna) in emparejamientos:  # simplices[low] es nacimiento y simplices[col] es muerte
@@ -135,14 +134,35 @@ def conseguir_puntos_diagrama(complejo):
                 (x, y) = (0, complejo.devolverPeso(simplices[columna]))
                 lista_puntos.append([x, y])
             else:
+                simpliceX = simplices[low]
+                simpliceY = simplices[columna]
                 (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
-                if x > y :
+                if x > y:
                     print("HOLA")
                     print(simplices[low], simplices[columna])
-                lista_aristas.append([x, y])
+                    complejo.devolverPeso(simplices[low])
+                    complejo.devolverPeso(simplices[columna])
+                # los que tienen una diferencia considerable los añado, ya que por precision de la maquina sino se
+                # muestran muchisimos mas practicamente en la propia linea, asi al menos el de la circunferencia son
+                # iguales por ej
+                if y - x > 0.000001:
+                    lista_aristas.append([x, y])
 
     # añadimos el punto del infinito que sabemos que siempre va a estar ahi peso de la comp conexa del 0
-    lista_puntos.append((0, complejo.pesos[-1] + 1))
+    maxPuntoY = 0
+    maxAristaY = 0
+    maximo = 0
+    if len(lista_puntos) > 0:
+        maxPuntoY = max(lista_puntos, key=lambda x: x[1])[1]
+
+    if len(lista_aristas) > 0:
+        maxAristaY = max(lista_aristas, key=lambda x: x[1])[1]
+
+    if maxPuntoY != 0:
+        maximo = maxPuntoY
+    if maxAristaY != 0:
+        maximo = max(maximo, maxAristaY)
+    lista_puntos.append((0, maximo + 1))
 
     return lista_puntos, lista_aristas
 
