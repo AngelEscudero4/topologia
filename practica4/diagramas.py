@@ -1,5 +1,3 @@
-from matplotlib.pyplot import annotate
-
 from practica1 import Complejo
 import numpy as np
 from practica3 import homologia
@@ -82,8 +80,6 @@ def get_emparejamientos(matriz):
     Emparejamientos son [low(j),j]
     """
     emparejamientos = []
-    # reduzco para que no haya lows repetidos
-    algoritmo_emparejamiento_nacimiento_muerte(matriz)
 
     # recorremos las columnas
     for j in range(homologia.num_columnas(matriz)):
@@ -111,13 +107,21 @@ def conseguir_puntos_diagrama(complejo):
 
     # cogemos los emparejamientos por pares
     emparejamientos = get_emparejamientos(matriz_borde_gen)
-    # print("[low-columna]", emparejamientos)
+    print("[low-columna]", emparejamientos)
+
+    ##############################################################################
+    # LOS EMPAREJAMIENTOS ESTAN BIEN, HAY QUE MIRARLO A VER!!!!
+    ##############################################################################
+
 
     # cogemos los simplices ordenados --> OJO QUE TIENEN QUE COINCIDIR CON LOS DE maatriz_borde_gen
     simplices = simplices_ordenados(complejo)
     print(simplices)
 
     # ordenamos los simplices por pesos para poder sacar el asociado al simplice
+    print(complejo.simplices)
+    print(complejo.pesos)
+
     complejo.filtrationOrder()
     print(complejo.simplices)
     print(complejo.pesos)
@@ -128,10 +132,13 @@ def conseguir_puntos_diagrama(complejo):
             # si es un de H0 lo añado a los puntos, si H1 lo añado a aristas
             if complejo.devolverPeso(simplices[low]) == 0:
                 # low sera la fila y col columna --> sacamos simplices para sus pesos y pintar el punto
-                (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
+                (x, y) = (0, complejo.devolverPeso(simplices[columna]))
                 lista_puntos.append([x, y])
             else:
                 (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
+                if x > y :
+                    print("HOLA")
+                    print(simplices[low], simplices[columna])
                 lista_aristas.append([x, y])
 
     # añadimos el punto del infinito que sabemos que siempre va a estar ahi peso de la comp conexa del 0
@@ -165,6 +172,16 @@ def diagrama_barras(complejo):
 
 def diagrama_persistencia(complejo):
     puntos_diagrama, aristas_diagrama = conseguir_puntos_diagrama(complejo)
+
+    print("-------------------------------------------------------")
+    print("-------------------------------------------------------")
+    print("-------------------------------------------------------")
+    for [x, y] in puntos_diagrama:
+        if x > y:
+            print("LOOOOOL: ", [x, y])
+    for [x, y] in aristas_diagrama:
+        if x > y:
+            print("LOOOOOL: ", [x, y])
 
     peso_max = puntos_diagrama[-1][1]
 
