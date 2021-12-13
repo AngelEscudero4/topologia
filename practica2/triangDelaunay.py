@@ -247,7 +247,6 @@ def VietorisRips(points):
                 complejoVietoris.anadirSimplice([elem], 0.0)
         # calculamos la longitud de la arista y lo metemos con peso 0.5 porq simpl € si diam(simpl) <= 2r
         elif i == 1:
-            # print(carasDimi)
             for elem in carasDimi:
                 valor = 0.5 * dist(points[elem[0]], points[elem[1]])
                 complejoVietoris.anadirSimplice([elem], valor)
@@ -277,23 +276,3 @@ def filtracionComplejoVR(points, peso):
     filtracion = complejoVR.filtration(peso)
     return complejoVR
 
-
-
-
-
-
-
-# CODIGO PARA EJECUTAR LA PRACTICA --> CREAR PUNTOS RANDOM CALCULAR ALPHA COMPLEJO Y PRINTEAR EL ALPHACOMPLEJO
-# puntos = np.random.rand(10, 2)
-# complejo = alphaComplejo(puntos)
-# # poner a true si queremos sacar una unica filtracion, false si queremos el gif
-# soloUnaFiltracion = False
-# if soloUnaFiltracion:
-#     cleanDir()
-#     filtracionAlphaComplejoPlot(complejo, 0.2, "prueba", puntos)
-# else:
-#     printearAlphaComplejoGIF(complejo, puntos)
-
-
-# puntos = np.random.rand(4, 2)
-# print('F en consola: ', filtracionComplejoVR(puntos, 0.3))

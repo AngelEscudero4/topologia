@@ -53,7 +53,6 @@ def algoritmo_emparejamiento_nacimiento_muerte(matriz):
             index_low = get_low(get_columna(matriz, i))
             # si existe low en esa columna
             if index_low != -1:
-                print("ENCONTRADO")
                 # buscamos lows anteriores en el mismo sitio
                 for otro_i in range(i):
                     # si tienen el mismo low
@@ -134,14 +133,7 @@ def conseguir_puntos_diagrama(complejo):
                 (x, y) = (0, complejo.devolverPeso(simplices[columna]))
                 lista_puntos.append([x, y])
             else:
-                simpliceX = simplices[low]
-                simpliceY = simplices[columna]
                 (x, y) = (complejo.devolverPeso(simplices[low]), complejo.devolverPeso(simplices[columna]))
-                if x > y:
-                    print("HOLA")
-                    print(simplices[low], simplices[columna])
-                    complejo.devolverPeso(simplices[low])
-                    complejo.devolverPeso(simplices[columna])
                 # los que tienen una diferencia considerable los añado, ya que por precision de la maquina sino se
                 # muestran muchisimos mas practicamente en la propia linea, asi al menos el de la circunferencia son
                 # iguales por ej
@@ -192,17 +184,6 @@ def diagrama_barras(complejo):
 
 def diagrama_persistencia(complejo):
     puntos_diagrama, aristas_diagrama = conseguir_puntos_diagrama(complejo)
-
-    print("-------------------------------------------------------")
-    print("-------------------------------------------------------")
-    print("-------------------------------------------------------")
-    for [x, y] in puntos_diagrama:
-        if x > y:
-            print("LOOOOOL: ", [x, y])
-    for [x, y] in aristas_diagrama:
-        if x > y:
-            print("LOOOOOL: ", [x, y])
-
     peso_max = puntos_diagrama[-1][1]
 
     # si tenemos puntos los pintamos (H0)
