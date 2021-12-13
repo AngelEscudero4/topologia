@@ -1,15 +1,5 @@
 from practica1.Complejo import Complejo
 
-'''
-----------------------------------------------------------------------
-----------------------------------------------------------------------
-----------------------------------------------------------------------
-                            PRACTICA 1
-----------------------------------------------------------------------
-----------------------------------------------------------------------
-----------------------------------------------------------------------
-'''
-
 # EJEMPLO 1
 # (1) Consideramos el 3-símplice
 sc = Complejo([(0, 1, 2, 3)])
@@ -26,13 +16,13 @@ for i in range(sc.dim() + 1):
     print('Caras dim ' + str(i) + ': ', sc.getCarasDim(i))
 
 # (8) Característica de Euler
-print('(3) Caract de Euler: ', sc.caract_euler())
+print('(8) Caract de Euler: ', sc.caract_euler())
 
 # (9) Estrella de la arista (0,1)
-print('(4) Estrella (0,1): ', sc.estrella((0, 1)))
+print('(9) Estrella (0,1): ', sc.estrella((0, 1)))
 
 # (10) Link de la arista (0,1)
-
+print('(10) Link (0,1): ', sc.link((0, 1)))
 
 # (11) Número de componentes conexas
 print('(11) Componentes conexas: ', sc.num_componentes_conexas())
@@ -49,9 +39,10 @@ print('(13) Caras: ', sc1.getCaras())
 print('(14) Dimension: ', sc1.dim())
 
 # (15) Estrella del vértice 0
-print('(15) Estrella {0,1}: ', sc1.estrella((0, 1)))
+print('(15) Estrella {0}: ', sc1.estrella((0,)))
 
 # (16) Link del vértice 0
+print('(16) Link {0}: ', sc1.link((0,)))
 
 # (17) Característica de Euler
 print('(17) Característica de Euler: ', sc1.caract_euler())
@@ -74,9 +65,10 @@ print('(21) Dimension: ', sc2.dim())
 print('(22) 1-Esqueleto del complejo: ', sc.esqueleto(1))
 
 # (23) Estrella del vértice 4
-print('(23) Estrella {0,1}: ', sc2.estrella((4,)))
+print('(23) Estrella {4}: ', sc2.estrella((4,)))
 
 # (24) Link del vértice 4
+print('(23) Link {4}: ', sc2.link((4,)))
 
 # (25) Característica de Euler
 print('(24) Característica de Euler: ', sc2.caract_euler())

@@ -8,18 +8,26 @@ import practica3.homologia as hom
 
 class Complejo:
     """
-    INFORMACION DE LOS TIPOS DE DATOS:
-    - Complejo Simplicial --> [simplices];[peso del simplice correspondiente]
+    TIPO DE DATOS:
+    - Complejo Simplicial --> [simplices] - [peso del simplice correspondiente]
     - Simplice --> Tup
 
-    simplice = (1,2,3) x = contructor([(), (), ()]) --> complejo = [simplice, ....];[peso1, ....]
-    1. Añadir simplice(simplNuevo)--> complejo = [simplice, ...., SimplNuevo]
-    2. x = añadir(tuplaExistente, peso)--> complejo = [.....,simplice]; [....,peso]
-        -> en caso de uno sin peso --> meter el 0
+    Para crear un complejo:
+
+    1) SIN pesos --> Poner simplices maximales
+    complejo = Complejo([(0, 1), (1, 2, 3, 4), (4, 5), (5, 6), (4, 6), (6, 7, 8), (8, 9)]) --> Se crea con pesos 0
+
+    ------------------------------
+
+    2) CON pesos
+    sc = Complejo([])
+    sc.anadirSimplice([(0, 1)], 1.0)
+    sc.anadirSimplice([(1, 2), (2, 3), (2, 4)], 2.0)
+    sc.anadirSimplice([(3, 4)], 3.0)
+    sc.anadirSimplice([(2, 3, 4)], 4.0)
 
     """
 
-    # recibe lista de los simplices maximales
     def __init__(self, maximal_simplice_list: list[tuple]):
         """
         Recibimos una lista con los simplices maximales (tuplas).
@@ -28,18 +36,22 @@ class Complejo:
         El peso en la posicion i corresponde al simplice en la posicion i de la otra lista
         """
         self.simplices = maximal_simplice_list
-        self.pesos = [0.0] * len(maximal_simplice_list)
+        self.pesos = [0.0] * len(maximal_simplice_list)  # incializamos los pesos a 0
 
     def __str__(self):
-        return "Complejo: " + str(self.simplices) + "Pesos: " + str(self.pesos)
+        return "---------------------------------\nComplejo: " + str(self.simplices) + "\nPesos: " + str(
+            self.pesos) + "\n---------------------------------"
 
     def dim(self):
-        # la dimension del complejo es su simplice (lista) mas larga - 1
-        return len(max(self.simplices, key=len)) - 1
+        """
+        Devuelve la dimension del comp simplicial --> Max dimension de los simplices
+        :return:
+        """
+        return len(max(self.simplices, key=len)) - 1  # -1 por ser una lista (si n eltos -> dim n-1)
 
     def getCaras(self):
         """
-        Calcula todas las caras de los simplices maximales de un complejo simplicial
+        Calcula todas las caras de los simplices de un complejo simplicial
         """
         caras = set()
         for cada_simplice in self.simplices:
@@ -48,19 +60,19 @@ class Complejo:
 
     def getCarasDim(self, dim):
         """
-        Calcula las caras de longitud dim
+        Calcula las caras de dimension dada
         """
         return set(filter(lambda cara: (len(cara) - 1) == dim, self.getCaras()))
 
     def estrella(self, simpl):
         """
-        Obtenemos la estrella de 'self' del símplice 'simpl'
+        Calcula la estrella del complejo simplicial para el símplice dado
         """
         return set(filter(lambda cocara: esCara(simpl, cocara), self.getCaras()))
 
     def link(self, simpl):
         """
-        Obtenemos el link de 'self' del símplice 'simpl'
+        Calcula el link del complejo simplicial del símplice dado
         """
         estr = self.estrella(simpl)
         estr_cerrada = cerrarEstrella(estr)
@@ -69,7 +81,7 @@ class Complejo:
 
     def esqueleto(self, num):
         """
-        Calculamos el n-esqueleto de 'self' siendo n el valor pasado como parámetro llamado 'num'
+        Calculamos el n-esqueleto del complejo simplicial siendo n el valor pasado como parámetro llamado 'num'
         """
         esqueleto = set()
         for i in range(num + 1):
@@ -78,7 +90,7 @@ class Complejo:
 
     def caract_euler(self):
         """
-        Obtenemos la caracteristica de Euler del simplice
+        Obtenemos la caracteristica de Euler del complejo simplicial
         """
         simplices = self.getCaras()
         pares = len(list(filter(lambda cara: (len(cara) - 1) % 2 == 0, simplices)))
@@ -87,7 +99,7 @@ class Complejo:
 
     def num_componentes_conexas(self):
         """
-        Obtenemos el numero de componentes conexas del simplice 'self'
+        Calcula el numero de componentes conexas del complejo simplicial a traves del grafo asociado
         """
         G = nx.Graph()
         # Tengo que aplanarlos, por eso hago compresion
@@ -108,7 +120,7 @@ class Complejo:
 
         symmetrical_difference = list(set(dim0).symmetric_difference(set(dim1)))
 
-        # añado ristas a los que no estas conectados para evitar error
+        # añado aristas a los que no estas conectados para evitar error
         for i in symmetrical_difference:
             G.add_edge(*(i, i))
 
@@ -122,7 +134,8 @@ class Complejo:
     # si no esta la cara meter con peso y si esta quedarse con el mas pequeño
     def anadirSimplice(self, simplices: list[tuple], valor: float):
         """
-        Dado un simplice nuevo lo añade al conjuntos de simplices maximales. Ademas añade sus caras o si
+        Dado un simplice nuevo lo añade al conjunto de simplices junto con su peso.
+        Para sus caras en caso de que estuviera añadida previamente se queda con el menor peso.
         """
         aux = Complejo(simplices)
         for cara in aux.getCaras():
@@ -132,17 +145,11 @@ class Complejo:
                 self.simplices.append(cara)
                 self.pesos.append(valor)
 
-        # for cadaSimp in simplices:
-        #     self.simplices.append(cadaSimp)
-        #     self.pesos.append(valor)
-
     def filtration(self, valor: float):
         """
-        Obtenemos los simplices que tienen un peso menor o igual a 'valor'.
-        Crea una función que recupere el complejo simplicial formado por todos los  símplices cuyo flotante asociado sea menor o igual que un flotante dado.
+        Calcula los simplices que tienen un peso menor o igual a 'valor'.
         """
-        # primero los ordeno para optimizar, una vez llego al primero que tiene mayor peso se que puedo parar
-        self.filtrationOrder()
+        # primero ordeno los simplices segun su peso, luego almaceno los simplices hasta el de menor peso
         res = []
         for i in range(len(self.pesos)):
             if self.pesos[i] <= valor:
@@ -152,11 +159,14 @@ class Complejo:
         return res
 
     def obtenerPesoDeSimplice(self, simplice):
+        """
+        Devuelve el peso asociado al simplice (su peso es el que se encuentra en el mismo indice en la lista de pesos)
+        :param simplice:
+        :return:
+        """
         return self.pesos[self.simplices.index(simplice)]
 
     def filtrationOrder(self):
-        # lo mejor seria usar esto, en caso de empates de peso desempatar con longitud del simplice
-        # peso --> obtenerPesoDeSimplice long y x
         res = []
         simplicesCopia = self.simplices[:]
         pesosCopia = self.pesos[:]
@@ -165,22 +175,20 @@ class Complejo:
             res.append(simplicesCopia[indiceElemMin])
             simplicesCopia.pop(indiceElemMin)
             pesosCopia.pop(indiceElemMin)
-        # aprovechamos para ordenar la estructura por peso --> UTIL PARA DIAGRAMAS DE PERSISTENCIA
+        # ordena la estructura del complejo simplicial por pesos ademas de devolver los simplices ordenados
         self.simplices = res
         self.pesos.sort()
         return res
 
     def devolverPeso(self, simpl):
         """
-        Devuelve el peso del simplice asociado (minimo de sus cocaras)
-        o None si no tiene cocara -> no pertenece
+        Devuelve el peso del simplice asociado -> Sera el minimo de sus cocaras
         :param simpl:
         :return:
         """
         peso_res = None
         for i in range(len(self.simplices)):
-            # print(self.simplices[i], self.pesos[i])
-            # me quedo con el minimo de los pesos de sus cocaras
+            # si es cara entonces actualizo su peso
             if esCara(simpl, self.simplices[i]):
                 if peso_res is None:
                     peso_res = self.pesos[i]
@@ -191,16 +199,18 @@ class Complejo:
 
     def matriz_borde(self, p):
         """
-        Dado una dimension p construye la matriz de borde.
+        Dado una dimension p construye la matriz borde de dimension p.
         Esta es una matriz de incidencia len(caras_dim_p-1)(v) x len(caras_dim_p)(h)
 
-        COMO ACCEDER A ELEM DE MATRIZ: matriz[fila][col]
+        PARA ACCEDER A ELEM DE MATRIZ cuando es listas: matriz[fila][col]
+        PARA ACCEDER A ELEM DE MATRIZ cuando es numpy: matriz[fila, col]
         """
         simplices_dim_p1 = list(self.getCarasDim(p - 1))
         simplices_dim_p = list(self.getCarasDim(p))
         simplices_dim_p1.sort()
         simplices_dim_p.sort()
 
+        # creo la matriz borde
         matriz_borde = np.zeros((len(simplices_dim_p1), len(simplices_dim_p)))
 
         # hay que poner un 1 en la casilla [i][j] si el simplice_dim_p1[i] es cara de simplice_dim_p[j]
@@ -209,18 +219,26 @@ class Complejo:
                 if esCara(simplices_dim_p1[i], simplices_dim_p[j]):
                     matriz_borde[i, j] = 1
 
+        # la paso a lista
         matriz_borde = matriz_borde.tolist()
 
         return matriz_borde
 
-    def Betti_number(self, p):
+    def betti_number(self, p):
+        """
+        Calcula el numero de Betti p-dimensional
+        :param p:
+        :return:
+        """
         # vamos a construir la matriz borde para param (en H) y param-1 (en V)
-        # tenemos que calcular filas de 1's -->B_p-1
-        # tenemos que calcular columnas - columnas de 1's --> Z_p
-        # Numero de betti para p es B_p - Z_p
-        # con lo cual si queremos el numero de betti para p tenemos que sacar la forma normal de Smith para p y p+1
-        # OBS: los numeros de betti tiene sentido calcularlos hasta dim(complejo)
+        # filas de 1's --> B_p-1
+        # columnas - columnas de 1's --> Z_p
+        # Numero de betti para dim p = B_p - Z_p
+        # Si queremos el numero de betti para dim p tenemos que sacar la forma normal de Smith para p (Z_p)
+        # y p+1 (B_p)
+        # OBS: los numeros de betti tiene sentido calcularlos hasta dim(complejo) --> el resto son 0's
 
+        # caso extremo --> dim 0 -> Zp es el num de puntos
         if p == 0:
             matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p + 1))
             matriz_p1_np = np.array(matriz_p1)
@@ -230,6 +248,7 @@ class Complejo:
             betti = Zp - Bp
             return betti
 
+        # caso extremo --> dim maxima --> Bp = 0
         elif p == self.dim():
             matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
             matriz_p_np = np.array(matriz_p)
@@ -239,6 +258,8 @@ class Complejo:
         # Si p es menor que cero o mayor que dim(complejo) su numero de betti es 0
         elif p < 0 or p > self.dim():
             return 0
+
+        # caso general --> Calculo ambas matrices
         else:
             matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
             matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p + 1))
@@ -252,6 +273,8 @@ class Complejo:
             betti = Zp - Bp
             return betti
 
+
+# FUNCIONES GENERALES (no necesita el uso de self)
 
 def esCara(cara, simplice):
     """
@@ -270,8 +293,6 @@ def getCarasDeSimplice(simplice):
     # cogemos todas las caras de dim 1 hasta max
     for i in range(1, len(simplice) + 1):  # +1 para que coja tambien el maximal
         caras = caras.union(set(combinations(simplice, i)))
-    # como combinations nos devuelve tuplas -> casteamos a listas
-    # # tambien tenemos que eliminar los repetidos ya que [0,1] y [0,2] generan dos veces el
 
     return caras
 
