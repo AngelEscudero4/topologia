@@ -9,7 +9,7 @@ def betti_incremental(complejo: Complejo):
         Empezaremos con un complejo que sean los puntos y con B0
         Para las aristas que vayamos añadiendo miramos sin son positivas o negativas y vamos sumando.
         Las caras siempre tapan agujeros (B1 resta en 1 cada vez que añadimos)
-        """
+    """
     # cogemos las caras y las ordenamos por dimension
     caras = complejo.getCaras()
     lista_caras = []
