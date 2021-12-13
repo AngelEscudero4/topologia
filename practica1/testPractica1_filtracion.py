@@ -28,9 +28,6 @@ print('(81) Caras: ', K2)
 print('(82) Caras: ', K3)
 print('(83) Caras: ', K4)
 
-
-
-
 # NO ENTIENDO COMO LO ESTAS ORDENANDO EN EL PDF SI LOS METES CON EL PESO ORDENADO TAL CUAL
 # sc.filtrationorder
 

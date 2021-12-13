@@ -1,5 +1,3 @@
-import math
-
 import matplotlib.pyplot as plt
 
 import diagramas
@@ -11,28 +9,6 @@ from practica2.triangDelaunay import alphaComplejo
 def imprimir_matriz(matriz):
     print(np.array(matriz))
     print("---------------------------------------------------------------------")
-
-
-pi = math.pi
-
-
-def PointsInCircum(r, n=100):
-    return [(math.cos(2 * pi / n * x) * r, math.sin(2 * pi / n * x) * r) for x in range(0, n + 1)]
-
-
-def ruido(points):
-    puntos_diagrama = np.array(points)
-    plt.scatter(puntos_diagrama[:, 0], puntos_diagrama[:, 1], color="blue")
-    plt.plot()
-    noise = np.random.normal(0, 0.1, 101)
-    lista = []
-    for i in range(len(points)):
-        lista.append([points[i][0] + noise[i], points[i][1] + noise[i]])
-    # puntos_diagrama = np.array(signal)
-    lista = np.array(lista)
-    plt.scatter(lista[:, 0], lista[:, 1], color="red")
-    plt.show()
-    return lista
 
 
 # puntos = np.random.rand(100, 2)
@@ -52,9 +28,6 @@ def ruido(points):
 #                    [-2.0, 2.0],
 #                    [2.0, 2.0],
 #                    [0.0, 3.0]])
-
-
-
 
 
 # puntos = np.array([[0.509853, 0.78852273],
@@ -133,17 +106,16 @@ print("------------------------------------------")
 print("------------------------------------------")
 print("------------------------------------------")
 
-
 plt.plot(puntos[:, 0], puntos[:, 1], 'ko')
 plt.show()
 
 # puntos = ruido(PointsInCircum(1))
 
-#saco el complejo
+# saco el complejo
 complejo = alphaComplejo(puntos)
 # ordeno los simplices por pesos
 complejo.filtrationOrder()
 
-#calculo sus diagramas
+# calculo sus diagramas
 diagramas.diagrama_persistencia(complejo)
 diagramas.diagrama_barras(complejo)
