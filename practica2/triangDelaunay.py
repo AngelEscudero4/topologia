@@ -277,12 +277,6 @@ def filtracionComplejoVR(points, peso):
     filtracion = complejoVR.filtration(peso)
     return complejoVR
 
-
-
-
-
-
-
 # CODIGO PARA EJECUTAR LA PRACTICA --> CREAR PUNTOS RANDOM CALCULAR ALPHA COMPLEJO Y PRINTEAR EL ALPHACOMPLEJO
 # puntos = np.random.rand(10, 2)
 # complejo = alphaComplejo(puntos)

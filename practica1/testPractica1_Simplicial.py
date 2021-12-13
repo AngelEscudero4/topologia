@@ -37,7 +37,6 @@ print('(4) Estrella (0,1): ', sc.estrella((0, 1)))
 # (11) Número de componentes conexas
 print('(11) Componentes conexas: ', sc.num_componentes_conexas())
 
-
 # EJEMPLO 2
 # (12) Consideramos el 3-símplice
 sc1 = Complejo(list(sc.esqueleto(2)))
@@ -72,7 +71,7 @@ print('(20) Caras: ', sc2.getCaras())
 print('(21) Dimension: ', sc2.dim())
 
 # (22) 1-Esqueleto
-print('(22) 1-Esqueleto del complejo: ',sc.esqueleto(1))
+print('(22) 1-Esqueleto del complejo: ', sc.esqueleto(1))
 
 # (23) Estrella del vértice 4
 print('(23) Estrella {0,1}: ', sc2.estrella((4,)))
@@ -100,13 +99,13 @@ sc = Complejo([(0, 1, 2), (2, 3), (3, 4)])
 print('(30) Conjunto de todos sus símplices: ', sc.getCaras())
 
 # (31) Dimensión del símplice
-print('(31) Dimensión del complejo: ',sc.dim())
+print('(31) Dimensión del complejo: ', sc.dim())
 
 # (32) Calculamos el 1-esqueleto
 print('(32) 1-Esqueleto de complejo: ', sc.esqueleto(1))
 
 # (33) Estrella del vértice 2
-print('(33) Estrella del vértice 2: ',sc.estrella((2,)))
+print('(33) Estrella del vértice 2: ', sc.estrella((2,)))
 
 # (34) Link del vértice 2
 print('(34) Obtenemos el link del vértice: ', sc.link((2,)))
