@@ -264,6 +264,7 @@ class Complejo:
             matriz_p = hom.forma_normal_Smith(self.matriz_borde(p))
             matriz_p1 = hom.forma_normal_Smith(self.matriz_borde(p + 1))
 
+            # paso a numpy para calcular el rango
             matriz_p_np = np.array(matriz_p)
             matriz_p1_np = np.array(matriz_p1)
 
