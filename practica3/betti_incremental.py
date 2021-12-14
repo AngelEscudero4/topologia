@@ -4,7 +4,7 @@ from practica1.Complejo import Complejo
 def betti_incremental(complejo: Complejo):
     """
         Recibimos un complejo simplicial.
-        En funcion de los 0, 1, 2 simplices vamos a variar los numeros de betti 0 y 1.
+        En funcion de la dimension (0, 1, 2) de los simplices vamos a variar los numeros de betti 0 y 1.
 
         Empezaremos con un complejo que sean los puntos y con B0
         Para las aristas que vayamos añadiendo miramos sin son positivas o negativas y vamos sumando.
@@ -60,4 +60,3 @@ def misma_componente_conexa(arista, componentes_conexas):
     componentes_conexas.append(union)
     return False
 
-# [[0,1,2,3], [4,5]]
