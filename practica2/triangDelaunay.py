@@ -251,12 +251,14 @@ def VietorisRips(points):
         elif i == 1:
             for elem in carasDimi:
                 valor = 0.5 * dist(points[elem[0]], points[elem[1]])
+                # lo añado con valor r arist pertenece a VR(r) si diam <= 2r --> radio <= r
                 complejoVietoris.anadirSimplice([elem], valor)
-                longitudes.update({str(elem[0]) + '-' + str(elem[1]): valor})
+                longitudes.update({str(elem[0]) + '-' + str(elem[1]): valor}) # lo guardo en un dic para luego triangs
         # caso de dim mayor su peso sera el peso de la arista de mayor diam
         else:
             for elem in carasDimi:
-                # creo un complejo con el triangulo para conseguir las aristas asociadas
+                # creo un complejo con el triangulo para conseguir las aristas asociadas -->
+                # el diam de un triangulo es el diam maximo de las aristas
                 complejoAux2 = Complejo([elem])
                 aristas = complejoAux2.getCarasDim(1)
                 peso_complejo = None
