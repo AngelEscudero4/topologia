@@ -38,7 +38,7 @@ def alphaComplejo(points):
 
     Del = Delaunay(points)
     simplicesDelaunay = Del.simplices
-    # ordenar lista de listas
+    # ordenar lista de listas -> No realmente necesario, pero asi el print siempre es mas facil de ver
     simplicesDelaunay = ordenar(simplicesDelaunay)
 
     print("SIMPLCES: ", simplicesDelaunay)
@@ -61,13 +61,14 @@ def alphaComplejo(points):
         trianglePointsCoords = []
         puntos = []
         for indexPoint in simplice:
-            trianglePointsCoords.append(list(points[indexPoint]))
-            puntos.append(indexPoint)
+            trianglePointsCoords.append(list(points[indexPoint]))  # me guardo sus coordenadas
+            puntos.append(indexPoint)  # me guardo su indice
         trianglePointsTuplesIndice = tuple(puntos)
 
         # calcular circuncentro y circunradio
         circuncentro = circumcenter(trianglePointsCoords)
-        circunradio = dist(trianglePointsCoords[0], circuncentro)
+        circunradio = dist(trianglePointsCoords[0],
+                           circuncentro)  # distancia desde un pto cualquiera del triang a circuncentro
 
         # añadir simplice (triang) al alphaComplejo
         alphaComplejoRes.anadirSimplice([trianglePointsTuplesIndice], circunradio)
@@ -148,7 +149,7 @@ def printearAlphaComplejoGIF(complejo: Complejo, puntos):
     """
     # ordeno los pesos para printear las graficas en orden
     pesos = complejo.pesos.copy()
-    pesos = list(set(pesos))
+    pesos = list(set(pesos))  # borro repetidos en caso de que haya
     pesos.sort()
     # limpio las imagenes anteriores si existen
     cleanDir()
@@ -179,8 +180,9 @@ def filtracionAlphaComplejoPlot(alphaComplejoTotal, peso, nombreFich, puntosCoor
     for simplice in filtracion:
         simpliceCoords = []
         for each_point in simplice:
-            simpliceCoords.append(puntosCoord[each_point])
-        filtracionCoords.append(simpliceCoords)
+            simpliceCoords.append(puntosCoord[each_point])  # cojo las coords de los puntos para pintarlos
+        filtracionCoords.append(simpliceCoords)  # una vez tengo el simplice con las coords entero lo guardo
+    # printeo segun si es punto, arista o triangulo
     for simplice in filtracionCoords:
         if len(simplice) == 1:
             plt.plot(simplice[0][0], simplice[0][1], 'ko')
@@ -219,8 +221,7 @@ def VietorisRips(points):
     Se sigue el algoritmo de Vietoris-Rips de la clase 4
     :return:
     """
-    # para cada simplice calcular la arista mas larga y ese sera el diam del simplice
-    #           --> maximos son de dimension 2
+    # para cada simplice calcular la arista mas larga y ese sera el diam del simplice --> maximos son de dimension 2
     # primero aristas les asigno su distancia
     # para cada triang le asigno el de la mayor arista
 
@@ -228,11 +229,12 @@ def VietorisRips(points):
     # crear un complejo con ello para usar getCarasDim de dim 0,1,2
     # meto los puntos con peso 0
     # meto las aristas con peso su diam * 0.5
-    # meto los triangs con con peso el de la arista de mayor diam --> diam*0.5 ==> bucle para dim hasta n-1 (n=nº de puntos)
+    # meto los triangs con con peso el de la arista de mayor diam -->
+    # diam*0.5 ==> bucle para dim hasta n-1 (n=nº de puntos)
 
     lst = list(range(0, len(points)))  # range hace [a,b)
 
-    complejoAux = Complejo([tuple(lst)])
+    complejoAux = Complejo([tuple(lst)])  # creo un complejo con simplice maximal todos los vertices
     complejoVietoris = Complejo([])
 
     # obtenemos las logitudes de las aristas
@@ -254,6 +256,7 @@ def VietorisRips(points):
         # caso de dim mayor su peso sera el peso de la arista de mayor diam
         else:
             for elem in carasDimi:
+                # creo un complejo con el triangulo para conseguir las aristas asociadas
                 complejoAux2 = Complejo([elem])
                 aristas = complejoAux2.getCarasDim(1)
                 peso_complejo = None
@@ -265,14 +268,7 @@ def VietorisRips(points):
                     else:
                         peso_complejo = max(peso_complejo,
                                             longitudes.get(str(each_arista[0]) + '-' + str(each_arista[1])))
+                # una vez tengo calculado su peso añado el triangulo
                 complejoVietoris.anadirSimplice([elem], peso_complejo)
 
     return complejoVietoris
-
-
-def filtracionComplejoVR(points, peso):
-    complejoVR = VietorisRips(points)
-    print(complejoVR)
-    filtracion = complejoVR.filtration(peso)
-    return complejoVR
-

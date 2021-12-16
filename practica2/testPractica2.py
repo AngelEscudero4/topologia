@@ -99,19 +99,13 @@ alpha = pr2.alphaComplejo(points)
 print('Filtracion del complejo ordenado por umbral\n', alpha.filtrationOrder())
 print('Lista de umbrales\n', alpha.pesos)
 
-pr2.filtracionAlphaComplejoPlot(alpha, 0.26, 'complejo_r026', points)
+# para mostrar la grafica de un peso concreto:
+# pr2.filtracionAlphaComplejoPlot(alpha, 0.26, 'complejo_r026', points)
 
-'''
-Para hector es esto:
-
-for value in alpha.thresholdvalues():
-K=alpha.sublevel(value)
-plotalpha(points,K)
-plt.show()
-'''
-
+# para generar todos y el gif:
 pr2.printearAlphaComplejoGIF(alpha, points)
 
+print("VIETORIS-RIPS")
 VR = pr2.VietorisRips(points)
 print(VR.filtrationOrder())
 print(VR.pesos)
