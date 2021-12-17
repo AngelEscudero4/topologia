@@ -101,10 +101,6 @@ def get_emparejamientos(matriz):
     return emparejamientos
 
 
-# NOS FALTA POR MIRAR EL DE LA PRACTICA 2 QUE TENGAMOS TODOS LOS EJEMPLOS --> EL DE CALCULAR LOS NUMS DE BETTI PARA LOS
-# DISTINTOS OBJETOS
-
-
 def conseguir_puntos_diagrama(complejo):
     matriz_borde_gen = matriz_borde_generalizada(complejo)
 

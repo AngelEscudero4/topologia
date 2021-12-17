@@ -1,9 +1,6 @@
 from practica1.Complejo import Complejo
 import numpy as np
 
-from practica3.betti_incremental import betti_incremental
-
-
 def imprimir_matriz(matriz):
     print(np.array(matriz))
     print("---------------------------------------------------------------------")
@@ -22,7 +19,6 @@ imprimir_matriz(sc.matriz_borde(2))
 print("Matriz borde 3:")
 imprimir_matriz(sc.matriz_borde(3))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Nºs de Betti del tetraedro: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2), sc.betti_number(3))
 print("---------------------------------------------------------------------")
@@ -31,7 +27,6 @@ print("---------------------------------------------------------------------")
 print("EJEMPLO 2 (2-Esfera - Borde tetraedro)")
 sc1 = Complejo(list(sc.getCarasDim(2)))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Nºs de Betti de la 2-esfera: ", sc1.betti_number(0), sc1.betti_number(1), sc1.betti_number(2))
 print("---------------------------------------------------------------------")
@@ -49,7 +44,6 @@ imprimir_matriz(sc.matriz_borde(2))
 print("Matriz borde 3:")
 imprimir_matriz(sc.matriz_borde(3))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Nºs de Betti: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2), sc.betti_number(3))
 print("---------------------------------------------------------------------")
@@ -71,7 +65,6 @@ imprimir_matriz(sc.matriz_borde(1))
 print("Matriz borde 2:")
 imprimir_matriz(sc.matriz_borde(2))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Números de Betti: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2))
 print("---------------------------------------------------------------------")
@@ -86,7 +79,6 @@ imprimir_matriz(sc.matriz_borde(1))
 print("Matriz borde 2:")
 imprimir_matriz(sc.matriz_borde(2))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Números de Betti: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2))
 print("---------------------------------------------------------------------")
@@ -144,7 +136,6 @@ imprimir_matriz(sc.matriz_borde(1))
 print("Matriz borde 2:")
 imprimir_matriz(sc.matriz_borde(2))
 
-print("Betti incremental", betti_incremental(sc))
 
 print("Nºs de Betti: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2), sc.betti_number(3))
 print("---------------------------------------------------------------------")
@@ -192,7 +183,6 @@ imprimir_matriz(sc.matriz_borde(1))
 print("Matriz borde 2:")
 imprimir_matriz(sc.matriz_borde(2))
 
-print("Betti incremental", betti_incremental(sc))
 
 
 print("Nºs de Betti: ", sc.betti_number(0), sc.betti_number(1), sc.betti_number(2), sc.betti_number(3))
